@@ -1,14 +1,14 @@
-import { ClerkProvider } from "@clerk/nextjs/dist/components.server";
-import "./globals.css";
-import { Montserrat } from "next/font/google";
-import { dark } from "@clerk/themes";
-import Head from "next/head";
+import { ClerkProvider } from '@clerk/nextjs/dist/components.server';
+import './globals.css';
+import { Montserrat } from 'next/font/google';
+import { dark } from '@clerk/themes';
+import Head from 'next/head';
 
-const montserrat = Montserrat({ subsets: ["latin"] });
+const montserrat = Montserrat({ subsets: ['latin'] });
 
 export const metadata = {
-  title: "Explore | Gymlink",
-  description: "Explore the Gymlink community.",
+  title: 'Explore | Gymlink',
+  description: 'Explore the Gymlink community.',
 };
 
 export default function RootLayout({
@@ -23,9 +23,9 @@ export default function RootLayout({
       }}
     >
       <Head>
-        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel='icon' type='image/x-icon' href='/favicon.ico' />
       </Head>
-      <html lang="en" className="bg-dark-500">
+      <html lang='en' className='bg-dark-500 dark'>
         <body className={montserrat.className}>{children}</body>
       </html>
     </ClerkProvider>
