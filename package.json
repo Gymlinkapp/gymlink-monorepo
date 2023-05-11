@@ -1,0 +1,19 @@
+{
+  "name": "root",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "start:app": "cd packages/expo-app && expo start",
+    "start:api": "cd packages/api && npm run dev",
+    "start:chat-service": "cd packages/chat-service && npm run dev",
+    "start:landing-page": "cd packages/landing-page && npm run dev",
+    "start:web": "cd packages/explore && npm run dev",
+    "start:all": "concurrently \"npm run start:app\" \"npm run start:api\" \"npm run start:chat-service\" \"npm run start:web\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.0.1",
+    "lerna": "^6.6.2"
+  }
+}
