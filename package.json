@@ -10,7 +10,8 @@
     "start:chat-service": "cd apps/chat-service && npm run dev",
     "start:landing-page": "cd apps/landing-page && npm run dev",
     "start:web": "cd apps/explore && npm run dev",
-    "start:all": "concurrently \"npm run start:app\" \"npm run start:api\" \"npm run start:chat-service\" \"npm run start:web\""
+    "start:all": "concurrently \"npm run start:app\" \"npm run start:api\" \"npm run start:chat-service\" \"npm run start:web\"",
+    "start:studio": "cd apps/api && npx prisma studio"
   },
   "devDependencies": {
     "concurrently": "^8.0.1",
