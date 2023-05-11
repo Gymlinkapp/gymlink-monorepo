@@ -1,0 +1,230 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider     = "mysql"
+    url          = env("DATABASE_URL")
+    relationMode = "prisma"
+}
+
+model User {
+    id          String  @id @default(uuid())
+    email       String  @unique
+    phoneNumber String  @unique
+    firstName   String
+    lastName    String
+    password    String
+    age         Int
+    bio         String?
+    gender      String?
+    race        String?
+    images      Json
+    tags        Json
+    longitude   Float?
+    latitude    Float?
+    authSteps   Int     @default(0)
+    isBot       Boolean @default(false)
+
+    feed   User[] @relation("UserFeed")
+    feedOf User[] @relation("UserFeed")
+
+    blockedUsers Json?  // Array of user ids
+
+    userPrompts UserPrompt[]
+    flaggedPosts FlaggedPost[]
+    posts        Post[]
+    likes        Like[]
+    comments     Comment[]
+    views        View[]
+
+    filterGoingToday Boolean @default(false)
+    filterWorkout    Json
+    filterSkillLevel Json
+    filterGender     Json
+    filterGoals      Json
+
+    chats   Chat[]    @relation("participants")
+    Message Message[]
+
+    streak Int @default(0)
+
+    tempJWT          String?
+    verificationCode String?
+    verified         Boolean? @default(false)
+
+    gym       Gym?     @relation(fields: [gymId], references: [id])
+    gymId     String?
+    split     Split?   @relation(fields: [splitId], references: [id])
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    chatId  String?
+    Chat    Chat?
+    splitId String?
+    userId  String?
+
+    @@index([splitId])
+    @@index([gymId])
+}
+
+enum PostTag {
+    ADVICE
+    QUESTION
+    GENERAL
+}
+
+model Post {
+    id        String    @id @default(uuid())
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    content   String    @db.VarChar(1024)
+    user      User      @relation(fields: [userId], references: [id])
+    userId    String
+    flaggedByUsers FlaggedPost[]
+    tags      PostTag
+    likes     Like[]
+    comments  Comment[]
+    views     View[]
+
+    @@index([userId])
+}
+
+
+model FlaggedPost {
+    id        String   @id @default(uuid())
+    user      User     @relation(fields: [userId], references: [id])
+    userId    String
+    post      Post     @relation(fields: [postId], references: [id])
+    postId    String
+    createdAt DateTime @default(now())
+
+    @@index([userId])
+    @@index([postId])
+}
+
+model Like {
+    id        String   @id @default(uuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    user      User     @relation(fields: [userId], references: [id])
+    userId    String
+    post      Post     @relation(fields: [postId], references: [id])
+    postId    String
+
+    @@index([userId])
+    @@index([postId])
+}
+
+model View {
+    id        String   @id @default(uuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    user      User     @relation(fields: [userId], references: [id])
+    userId    String
+    post      Post     @relation(fields: [postId], references: [id])
+    postId    String
+
+    @@index([userId])
+    @@index([postId])
+}
+
+model Comment {
+    id        String   @id @default(uuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    content   String
+    user      User     @relation(fields: [userId], references: [id])
+    userId    String
+    post      Post     @relation(fields: [postId], references: [id])
+    postId    String
+
+    @@index([userId])
+    @@index([postId])
+}
+
+model Gym {
+    id         String   @id @default(uuid())
+    name       String
+    location   Location @relation(fields: [locationId], references: [id])
+    radius     Float    @default(50)
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
+    users      User[]
+    locationId String
+
+    @@index([locationId])
+}
+
+model Location {
+    id   String @id @default(uuid())
+    lat  Float
+    long Float
+    Gym  Gym[]
+}
+
+model Split {
+    id        String @id @default(uuid())
+    monday    Json
+    tuesday   Json
+    wednesday Json
+    thursday  Json
+    friday    Json
+    saturday  Json
+    sunday    Json
+
+    users User[]
+}
+
+model Chat {
+    id           String    @id @default(uuid())
+    name         String
+    createdAt    DateTime  @default(now())
+    updatedAt    DateTime  @updatedAt
+    participants User[]    @relation("participants")
+    userId       String?   @unique
+    user         User?     @relation(fields: [userId], references: [id])
+    messages     Message[]
+}
+
+model Message {
+    id        String   @id @default(uuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    chatId    String
+    senderId  String
+    sender    User     @relation(fields: [senderId], references: [id])
+    content   String
+    chat      Chat     @relation(fields: [chatId], references: [id])
+
+    @@index([senderId])
+    @@index([chatId])
+}
+
+model Prompt {
+    id        String   @id @default(uuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    userPrompts UserPrompt[]
+
+    prompt String
+}
+
+model UserPrompt {
+    id        String   @id @default(uuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    user   User   @relation(fields: [userId], references: [id])
+    userId String
+
+    prompt   Prompt @relation(fields: [promptId], references: [id])
+    promptId String
+
+    answer      String
+    hasAnswered Boolean @default(false)
+
+    @@index([promptId])
+    @@index([userId])
+}

@@ -1,0 +1,42 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Button from "../components/Button.astro";
+---
+
+<Layout title="Gymlink - Link up with like-minded fitness enthusiasts.">
+  <main class={`bg-dark-500 min-h-screen xl:pt-32 relative bg-cover bg-center`}>
+    <video
+      autoplay
+      muted
+      loop
+      id="bg-video"
+      class="absolute inset-0 h-full object-cover"
+    >
+      <source src="3d-mockups1-lower.mp4" type="video/mp4" />
+    </video>
+    <div
+      class="inset-0 bg-dark-500/75 md:bg-transparent md:bg-gradient-to-t md:from-dark-500 md:to-transparent z-30 absolute"
+    >
+    </div>
+    <section
+      class="flex flex-col gap-5 pt-48 px-2 lg:px-48 z-50 tracking-wider items-center"
+    >
+      <h1
+        class="text-light-500 text-center text-7xl md:text-[7rem] font-bold brightness-200 z-50"
+      >
+        Find your gym bro.
+      </h1>
+      <h3 class="text-light-400 text-xl text-center max-w-lg lg:max-w-5xl z-50">
+        Gymlink is an app to find gym goers at your gym or nearby gyms.
+      </h3>
+      <div class="flex flex-row z-50 gap-2">
+        <Button
+          variant="primary"
+          text="Sign Up"
+          url="https://explore.gymlink.app"
+        />
+        <Button variant="secondary" text="Download" url="https://testflight.apple.com/join/NTM6DRrW" />
+      </div>
+    </section>
+  </main>
+</Layout>

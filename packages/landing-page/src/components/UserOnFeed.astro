@@ -1,0 +1,57 @@
+---
+export interface Props {
+  src: string;
+}
+
+const { src } = Astro.props;
+
+const names = [
+  'Jenny',
+  'John',
+  'Jane',
+  'Jack',
+  'Jill',
+  'Jesse',
+  'Jasper',
+  'Jasmine',
+  'Jade',
+  'Jenna',
+  'Jax',
+  'Jaxson',
+  'Jaxton',
+  'Jaxon',
+  'Jace',
+];
+const associateNamesWithSrc = (src: string): string => {
+  const index = parseInt(src.replace(/\D/g, ''));
+  return names[index];
+};
+
+const generateRandomAge = (): number => {
+  return Math.floor(Math.random() * (32 - 18 + 1) + 18);
+};
+
+const age = generateRandomAge();
+---
+
+<div
+  class='w-full rounded-xl overflow-hidden border-[0.5px] border-transparent hover:border-white ease-in-out duration-200 hover:brightness-110 hover:saturate-150 relative'
+>
+  <img src={src} class='object-cover' alt='user' />
+  <div
+    class='absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-dark-500 to-transparent'
+  >
+  </div>
+  <div class='absolute bottom-4 left-2'>
+    <div
+      class='grid place-items-center w-6 h-6 backdrop-blur bg-dark-500/10 rounded-full'
+    >
+      <p class='text-light-400 text-[10px]'>
+        {age}
+      </p>
+    </div>
+    <h4 class='text-white text-sm'>
+      {associateNamesWithSrc(src)}
+    </h4>
+  </div>
+</div>

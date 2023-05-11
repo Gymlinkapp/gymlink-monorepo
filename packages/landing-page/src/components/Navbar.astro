@@ -1,0 +1,63 @@
+---
+import Button from './Button.astro';
+// tasks
+// 1. change proper nav colors.
+// 2. create a button component.
+// 3. replace that button in here and in the hero section on the index page.
+---
+
+<header class='w-full z-50 fixed bg-dark-500/30 backdrop-blur-lg border-b-[0.5px] border-dark-300/50'>
+  <nav class='py-5'>
+    <ul class='flex justify-between items-center px-7'>
+      <li
+        class='text-2xl font-bold w-16 aspect-square rounded-md overflow-hidden'
+      >
+        <a href='/' class='text-light-500 w-full h-full aspect-square'>
+          <img
+            src='/icon.png'
+            alt='gymlink logo'
+            class='w-full h-full object-cover'
+          />
+        </a>
+      </li>
+      <li>
+        <ul class='flex flex-row items-center gap-2 md:gap-4'>
+          <li class='text-light-400 font-medium'>
+            <a href='/about'>About</a>
+          </li>
+          <li class='text-light-400 font-medium'>
+            <a href='https://forms.gle/2TitVNv9a4LHkQtTA' target='_blank'
+              >Feedback</a
+            >
+          </li>
+          <li>
+            <a href='https://discord.gg/effbAnqTWZ' target='_blank'>
+              <i class='ph-bold ph-discord-logo text-light-400 text-xl'></i>
+            </a>
+          </li>
+          <li>
+            <a href='https://twitter.com/gymlink_app' target='_blank'>
+              <i class='ph-bold ph-twitter-logo text-light-400 text-xl'></i>
+            </a>
+          </li>
+          <li>
+            <a href='https://instagram.com/gymlink_app' target='_blank'>
+              <i class='ph-bold ph-instagram-logo text-light-400 text-xl'></i>
+            </a>
+          </li>
+          <li>
+            <a href='https://tiktok.com/@gymlink_app' target='_blank'>
+              <i class='ph-bold ph-tiktok-logo text-light-400 text-xl'></i>
+            </a>
+          </li>
+          <li class='hidden sm:flex md:ml-10'>
+            <Button
+              text='Download'
+              url='https://testflight.apple.com/join/NTM6DRrW'
+            />
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+</header>
