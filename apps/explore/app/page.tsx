@@ -94,7 +94,6 @@ export default function Home() {
       setFirstName(user.firstName || 'User');
       setLastName(user.lastName || 'Name');
     }
-    console.log(user);
     if (isSignedIn && user && !sentToDb) {
       setSendToDb(true);
     }
