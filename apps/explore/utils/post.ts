@@ -1,3 +1,5 @@
+import { User } from '@/hooks/useGetUserByEmail';
+
 export type Post = {
   id: string;
   createdAt: Date;
@@ -10,7 +12,15 @@ export type Post = {
   updatedAt: Date;
   content: string;
   userId: string;
-  comments: [];
+  comments: {
+    id: string;
+    createdAt: Date;
+    user: User;
+    updatedAt: Date;
+    content: string;
+    userId: string;
+    postId: string;
+  }[];
   likes: [];
   views: [];
   tags: typeof PostTag;
