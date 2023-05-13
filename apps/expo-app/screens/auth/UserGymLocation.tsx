@@ -52,7 +52,7 @@ export default function UserGymLocation({ navigation }) {
 
   const autoCompleteGymLocations = async (input: string) => {
     // const apiKey = process.env.GOOGLE_API_KEY;
-    const apiKey = 'AIzaSyBeVNaKylQx0vKkZ4zW8T_J01s2rUK7KQA&';
+    const apiKey = 'AIzaSyBeVNaKylQx0vKkZ4zW8T_J01s2rUK7KQA';
     const URL = `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${input}&types=gym&location=${lat}%2C${long}&radius=500&key=${apiKey}`;
     if (input === '') {
       setNearGyms([]);
