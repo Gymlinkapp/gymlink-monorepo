@@ -80,15 +80,28 @@ export default function Home() {
               placeholder='Find your gym'
               className='input input-bordered w-full bg-transparent'
             />
-            {nearGyms.length > 0 && (
+            {nearGyms?.length > 0 && (
               <div className='z-10 w-full bg-dark-500 rounded-b-xl border-1 border-t-0 flex flex-col gap-2 border-dark-400'>
                 {nearGyms.map(
-                  (gym: { place_id: string; description: string }) => (
+                  (gym: {
+                    place_id: string;
+                    description: string;
+                    members: number;
+                  }) => (
                     <div
                       key={gym.place_id}
-                      className='p-2 hover:bg-dark-400 border-b-1 border-dark-400 rounded-xl cursor-pointer'
+                      className='p-2 hover:bg-dark-400 border-b-1 border-dark-400 rounded-xl cursor-pointer flex justify-between items-center'
                     >
-                      {gym.description}
+                      <h4 className='truncate flex-1'>{gym.description}</h4>
+                      {gym.members > 0 ? (
+                        <span className='ml-4 bg-dark-400 px-4 py-2 rounded-full text-xs'>
+                          Members: {gym.members}
+                        </span>
+                      ) : (
+                        <span className='ml-4 bg-dark-400 px-4 py-2 rounded-full text-xs'>
+                          Join now
+                        </span>
+                      )}
                     </div>
                   )
                 )}

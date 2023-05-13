@@ -29,9 +29,9 @@ model User {
     feed   User[] @relation("UserFeed")
     feedOf User[] @relation("UserFeed")
 
-    blockedUsers Json?  // Array of user ids
+    blockedUsers Json? // Array of user ids
 
-    userPrompts UserPrompt[]
+    userPrompts  UserPrompt[]
     flaggedPosts FlaggedPost[]
     posts        Post[]
     likes        Like[]
@@ -75,21 +75,20 @@ enum PostTag {
 }
 
 model Post {
-    id        String    @id @default(uuid())
-    createdAt DateTime  @default(now())
-    updatedAt DateTime  @updatedAt
-    content   String    @db.VarChar(1024)
-    user      User      @relation(fields: [userId], references: [id])
-    userId    String
+    id             String        @id @default(uuid())
+    createdAt      DateTime      @default(now())
+    updatedAt      DateTime      @updatedAt
+    content        String        @db.VarChar(1024)
+    user           User          @relation(fields: [userId], references: [id])
+    userId         String
     flaggedByUsers FlaggedPost[]
-    tags      PostTag
-    likes     Like[]
-    comments  Comment[]
-    views     View[]
+    tags           PostTag
+    likes          Like[]
+    comments       Comment[]
+    views          View[]
 
     @@index([userId])
 }
-
 
 model FlaggedPost {
     id        String   @id @default(uuid())
@@ -145,6 +144,7 @@ model Comment {
 
 model Gym {
     id         String   @id @default(uuid())
+    placeId    String?  @unique @default(uuid())
     name       String
     location   Location @relation(fields: [locationId], references: [id])
     radius     Float    @default(50)
