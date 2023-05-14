@@ -1,10 +1,17 @@
 'use client';
-import useOnboardingStep from '@/hooks/useOnboardingStep';
 import { SignInButton, useUser } from '@clerk/nextjs';
+import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
 export default function InitialDetailsModal() {
+  const router = useRouter();
   const { isSignedIn } = useUser();
+
+  useEffect(() => {
+    if (isSignedIn) {
+      router.push('/home');
+    }
+  }, [isSignedIn]);
 
   return (
     <main className='h-screen overflow-hidden grid place-items-center bg-dark-500'>
@@ -20,9 +27,7 @@ export default function InitialDetailsModal() {
             mode='modal'
             afterSignUpUrl='/home'
             afterSignInUrl='/home'
-          >
-            Sign in
-          </SignInButton>
+          />
         </button>
       </div>
     </main>

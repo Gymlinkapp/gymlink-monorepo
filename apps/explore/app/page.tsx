@@ -1,5 +1,4 @@
 'use client';
-import useOnboardingStep from '@/hooks/useOnboardingStep';
 import { useUser } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
