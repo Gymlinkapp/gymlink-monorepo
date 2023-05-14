@@ -152,6 +152,9 @@ model Gym {
     updatedAt  DateTime @updatedAt
     users      User[]
     locationId String
+    photos     Json?
+    theme      String?
+    address    String?
 
     @@index([locationId])
 }

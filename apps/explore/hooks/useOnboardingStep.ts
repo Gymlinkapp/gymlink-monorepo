@@ -8,12 +8,12 @@ interface OnboardingStepHook {
 const useOnboardingStep = (): OnboardingStepHook => {
   const [step, setStep] = useState<number>(() => {
     const storedStep = localStorage.getItem('onboardingStep');
-    return storedStep ? parseInt(storedStep, 10) : 1;
+    return storedStep ? parseInt(storedStep, 10) : 0;
   });
 
   useEffect(() => {
     if (!step) {
-      localStorage.setItem('onboardingStep', '1');
+      localStorage.setItem('onboardingStep', '0');
     }
     const onStorageChange = (e: StorageEvent) => {
       if (e.key === 'onboardingStep') {
@@ -26,7 +26,7 @@ const useOnboardingStep = (): OnboardingStepHook => {
     return () => {
       window.removeEventListener('storage', onStorageChange);
     };
-  }, []);
+  }, [step]);
 
   const updateStep = (newStep: number) => {
     localStorage.setItem('onboardingStep', newStep.toString());
