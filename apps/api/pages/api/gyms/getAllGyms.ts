@@ -29,9 +29,9 @@ export default async function handler(
     })
   )
     .then((gyms) => {
-      res.status(200).json({ gyms });
+      return res.status(200).json({ gyms });
     })
     .catch((error) => {
-      res.status(500).json({ error });
+      return res.status(500).json({ error });
     });
 }

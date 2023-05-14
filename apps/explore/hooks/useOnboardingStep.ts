@@ -12,6 +12,9 @@ const useOnboardingStep = (): OnboardingStepHook => {
   });
 
   useEffect(() => {
+    if (!step) {
+      localStorage.setItem('onboardingStep', '1');
+    }
     const onStorageChange = (e: StorageEvent) => {
       if (e.key === 'onboardingStep') {
         setStep(parseInt(e.newValue as string, 10));

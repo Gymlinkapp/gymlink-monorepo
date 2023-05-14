@@ -1,12 +1,28 @@
 'use client';
 import useOnboardingStep from '@/hooks/useOnboardingStep';
 import axios from 'axios';
+import Image from 'next/image';
 import { useState } from 'react';
+
+type SelectedGymAndLatLong = {
+  gym: {
+    name: string;
+    latitude: number;
+    longitude: number;
+  };
+  longitude: number;
+  latitude: number;
+};
 
 export default function FindGymLocationModal() {
   const { updateStep } = useOnboardingStep();
   const [nearGyms, setNearGyms] = useState([]);
   const [enteredGymLocation, setEnteredGymLocation] = useState('');
+  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+
+  const [selectedGym, setSelectedGym] = useState<SelectedGymAndLatLong | null>(
+    null
+  );
 
   const autoCompleteGymLocations = async (input: string) => {
     if (input === '') {
@@ -21,6 +37,7 @@ export default function FindGymLocationModal() {
           headers: {},
         }
       );
+      console.log(res.data.predictions);
       setNearGyms(res.data.predictions);
     } catch (error) {
       console.log(error);
@@ -55,6 +72,7 @@ export default function FindGymLocationModal() {
                   place_id: string;
                   description: string;
                   members: number;
+                  photos: { photo_reference: string }[];
                 }) => (
                   <div
                     onClick={() => {
@@ -64,7 +82,19 @@ export default function FindGymLocationModal() {
                     key={gym.place_id}
                     className='p-2 hover:bg-dark-400 border-b-1 border-dark-400 rounded-xl cursor-pointer flex justify-between items-center'
                   >
-                    <h4 className='truncate flex-1'>{gym.description}</h4>
+                    <div className='flex flex-row gap-4 items-center'>
+                      <div className='relative w-20 h-20 rounded-full overflow-hidden'>
+                        <Image
+                          src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=${gym?.photos[0]?.photo_reference}&key=AIzaSyBeVNaKylQx0vKkZ4zW8T_J01s2rUK7KQA`}
+                          alt='gym photo'
+                          fill
+                        />
+                      </div>
+                      <h4 className='truncate flex-1 max-w-lg'>
+                        {gym.description}
+                      </h4>
+                    </div>
+
                     {gym.members > 0 ? (
                       <span className='ml-4 bg-dark-400 px-4 py-2 rounded-full text-xs'>
                         Members: {gym.members}

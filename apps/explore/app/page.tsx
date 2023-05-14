@@ -5,24 +5,13 @@ import { useUser } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
-type Input = {
-  token: string;
-  gym: {
-    name: string;
-    latitude: number;
-    longitude: number;
-  };
-  authSteps: number;
-  longitude: number;
-  latitude: number;
-};
-
 export default function Home() {
   // const { isSignedIn, user } = useUser();
   const { step } = useOnboardingStep();
   const router = useRouter();
 
   useEffect(() => {
+    if (!step) router.push('/onboarding/findyourgym');
     switch (step) {
       case 1:
         router.push('/onboarding/findyourgym');
