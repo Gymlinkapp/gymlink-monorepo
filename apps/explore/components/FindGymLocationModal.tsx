@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 type SelectedGymAndLatLong = {
   gym: {
     name: string;
+    theme: string;
     latitude: number;
     longitude: number;
     adddress: string;
@@ -85,6 +86,7 @@ export default function FindGymLocationModal() {
                   longitude: number;
                   latitude: number;
                   gymAddress: string;
+                  icon_background_color: string;
                   photos: { photo_reference: string }[];
                 }) => (
                   <div
@@ -96,6 +98,7 @@ export default function FindGymLocationModal() {
                           placeId: gym.place_id,
                           name: gym.description,
                           photos: gym.photos,
+                          theme: gym.icon_background_color,
                           adddress: gym.gymAddress,
                         },
                         longitude: gym.longitude,
