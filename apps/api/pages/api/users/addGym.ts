@@ -50,12 +50,8 @@ export default async function handler(
     const newGym = await prisma.gym.create({
       data: {
         name: input.gym.name,
-        location: {
-          create: {
-            lat: input.gym.longitude,
-            long: input.gym.latitude,
-          },
-        },
+        latitude: input.gym.latitude,
+        longitude: input.gym.longitude,
       },
     });
 
