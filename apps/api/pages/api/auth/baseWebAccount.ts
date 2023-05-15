@@ -9,6 +9,7 @@ type Input = {
   email?: string;
   firstName?: string;
   lastName?: string;
+  images?: string[];
   gym: {
     name: string;
     latitude: number;
@@ -76,7 +77,7 @@ export default async function handler(
           longitude: input.longitude,
           latitude: input.latitude,
           password: '',
-          images: [],
+          images: input.images || [],
           tempJWT: '',
           age: 0,
           filterGender: [],
