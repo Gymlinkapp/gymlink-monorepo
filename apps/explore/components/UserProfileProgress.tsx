@@ -1,9 +1,21 @@
 import { supabase } from '@/utils/supabase';
+import { Split } from '@/utils/types/split';
 import { User } from '@/utils/types/user';
 import { Camera } from '@phosphor-icons/react';
 import axios from 'axios';
 import Image from 'next/image';
 import { useState } from 'react';
+
+const Day = ({ day }: { day: string }) => {
+  return (
+    <div className='flex flex-col items-center'>
+      <div className='w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center'>
+        <span className='text-gray-800'>{day[0].toUpperCase()}</span>
+      </div>
+      <span className='text-gray-800 text-sm'>{day}</span>
+    </div>
+  );
+};
 
 type Props = {
   user: User;
@@ -15,12 +27,18 @@ type RequredUserFields = {
   images: string[];
 };
 
+export type WeekSplit = {
+  day: string;
+  exercises: string[];
+};
+
 type OptionalUserFields = {
   gyms?: Gym[];
+  split?: WeekSplit[];
 };
 export default function UserProfileProgress({ user }: Props) {
   const { age, bio, images }: RequredUserFields = user;
-  const { gyms }: OptionalUserFields = user;
+  const { gyms, split }: OptionalUserFields = user;
   const [inputImages, setInputImages] = useState<string[]>(images);
   const [inputBio, setInputBio] = useState<string>('');
   const [inputAge, setInputAge] = useState<number>(18);
@@ -40,18 +58,14 @@ export default function UserProfileProgress({ user }: Props) {
 
   const hasAge = age > 0;
   const hasBio = bio || bio?.length > 0;
-  const hasImages = images.length > 1;
+  const hasImages = images.length >= 1;
+  const hasSplit = split?.id;
 
   const progressValue = () => {
-    if (hasAge && hasBio && hasImages) {
-      return 100;
-    } else if (hasAge && hasBio) {
-      return 80;
-    } else if (hasAge) {
-      return 50;
-    } else {
-      return 0;
-    }
+    const steps = [hasAge, hasBio, hasImages, hasSplit];
+    const totalSteps = steps.length;
+    const completedSteps = steps.filter((step) => step).length;
+    return Math.round((completedSteps / totalSteps) * 100);
   };
 
   if (progressValue() === 100) return null;
@@ -104,58 +118,74 @@ export default function UserProfileProgress({ user }: Props) {
               </div>
             )}
           </div>
-          <div className='flex-1'>
-            <p>Your gym pics</p>
-            <input
-              type='file'
-              multiple
-              onChange={async (e) => {
-                const imgs = e.target.files;
-                const images = imgs && Array.from(imgs);
+          {!hasImages && (
+            <div className='flex-1'>
+              <p>Your gym pics</p>
+              <input
+                type='file'
+                multiple
+                onChange={async (e) => {
+                  const imgs = e.target.files;
+                  const images = imgs && Array.from(imgs);
 
-                console.log(images);
-                if (!images) return;
-                // list through every FileList
-                images.map(async (image) => {
-                  const bucketPath = `user-${user.id}-${Math.random()}`;
-                  const { data, error } = await supabase.storage
-                    .from('user-images/public')
-                    .upload(bucketPath, image, {
-                      cacheControl: '3600',
-                      upsert: false,
-                    });
-
-                  if (data) {
-                    const url = supabase.storage
+                  console.log(images);
+                  if (!images) return;
+                  // list through every FileList
+                  images.map(async (image) => {
+                    const bucketPath = `user-${user.id}-${Math.random()}`;
+                    const { data, error } = await supabase.storage
                       .from('user-images/public')
-                      .getPublicUrl(bucketPath);
-                    setInputImages((prev) => [...prev, url.data.publicUrl]);
-                  }
-                });
-              }}
-              className='file-input file-input-bordered w-full max-w-xs'
-            />
-            <div className='flex gap-2 flex-col mt-4'>
-              <h4 className='text-md'>Chosen Images:</h4>
+                      .upload(bucketPath, image, {
+                        cacheControl: '3600',
+                        upsert: false,
+                      });
 
-              <div className='flex flex-wrap gap-2 w-full'>
-                {inputImages.length > 0 &&
-                  inputImages.map((image) => (
-                    <div
-                      key={image}
-                      className='relative flex-1 h-32 overflow-hidden rounded-xl'
-                    >
-                      <Image
-                        src={image}
-                        fill
-                        alt='image'
-                        className='object-cover'
-                      />
-                    </div>
-                  ))}
+                    if (data) {
+                      const url = supabase.storage
+                        .from('user-images/public')
+                        .getPublicUrl(bucketPath);
+                      setInputImages((prev) => [...prev, url.data.publicUrl]);
+                    }
+                  });
+                }}
+                className='file-input file-input-bordered w-full max-w-xs'
+              />
+              <div className='flex gap-2 flex-col mt-4'>
+                <h4 className='text-md'>Chosen Images:</h4>
+
+                <div className='flex flex-wrap gap-2 w-full'>
+                  {inputImages.length > 0 &&
+                    inputImages.map((image) => (
+                      <div
+                        key={image}
+                        className='relative flex-1 h-32 overflow-hidden rounded-xl'
+                      >
+                        <Image
+                          src={image}
+                          fill
+                          alt='image'
+                          className='object-cover'
+                        />
+                      </div>
+                    ))}
+                </div>
               </div>
             </div>
-          </div>
+          )}
+          {hasBio && hasAge && hasImages && !hasSplit && (
+            <div>
+              <p>Split</p>
+              {split?.map((day, idx) => (
+                <Day key={idx} day={day.day} />
+              ))}
+              <div>
+                <div>
+                  <div>M</div>
+                  <div></div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
       <div>

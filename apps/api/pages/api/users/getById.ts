@@ -30,6 +30,7 @@ export default async function handler(
       },
       include: {
         userPrompts: true,
+        split: true,
         gym: {
           select: {
             name: true,
