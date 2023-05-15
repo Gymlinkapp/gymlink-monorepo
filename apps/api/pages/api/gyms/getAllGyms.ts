@@ -15,6 +15,22 @@ export default async function handler(
   const input = req.body as Input;
   console.log('input', input);
 
+  if (!input.gymNames) {
+    const gyms = await prisma.gym.findMany({
+      where: {
+        name: {
+          not: {
+            equals: 'Fit4Less',
+          },
+        },
+      },
+    });
+
+    console.log('gyms', gyms);
+
+    return res.status(200).json({ gyms });
+  }
+
   Promise.all(
     input.gymNames.map(async (gymName) => {
       const gym = await prisma.gym.findFirst({
