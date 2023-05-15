@@ -27,6 +27,18 @@ export default async function handler(
       where: {
         placeId: input.placeId,
       },
+      include: {
+        users: {
+          select: {
+            email: true,
+            age: true,
+            firstName: true,
+            lastName: true,
+            split: true,
+            images: true,
+          },
+        },
+      },
     });
   }
 

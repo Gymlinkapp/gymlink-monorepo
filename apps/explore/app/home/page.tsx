@@ -16,6 +16,7 @@ type Input = {
   email?: string;
   firstName?: string;
   lastName?: string;
+  images?: string[];
   gym: {
     id?: string;
     name: string;
@@ -66,6 +67,7 @@ export default function Home() {
           email: user.emailAddresses[0].emailAddress,
           firstName: user.firstName,
           lastName: user.lastName,
+          images: [user.profileImageUrl],
           gym: {
             name: gym.name,
             theme: gym.theme,
@@ -99,6 +101,8 @@ export default function Home() {
   if (isLoading || isFetching || !data) {
     return <h4>loading..</h4>;
   }
+
+  console.log(user?.profileImageUrl);
 
   return (
     <div className='mt-20 max-w-3xl mx-auto'>
