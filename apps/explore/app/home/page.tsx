@@ -1,6 +1,5 @@
 'use client';
 import MainNavbar from '@/components/MainNavbar';
-import MyGyms from '@/components/MyGyms';
 import wrapGooglePhotoRefernce from '@/utils/wrapGooglePhotoReference';
 import { UserButton, useUser, SignInButton } from '@clerk/nextjs';
 import { useQuery } from '@tanstack/react-query';
