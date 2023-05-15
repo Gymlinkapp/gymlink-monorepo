@@ -1,6 +1,7 @@
 import wrapGooglePhotoRefernce from '@/utils/wrapGooglePhotoReference';
 import axios from 'axios';
 import Image from 'next/image';
+import Link from 'next/link';
 
 async function getGym(placeId: string) {
   try {
@@ -28,6 +29,11 @@ export default async function GymPage({
 
   return (
     <main className='max-w-5xl mx-auto mt-8'>
+      <div className='mb-4'>
+        <Link href='/home' className='btn btn-secondary'>
+          Back
+        </Link>
+      </div>
       <div
         className={`w-full h-[25vh] relative bg-cover bg-center bg-no-repeat rounded-3xl overflow-hidden `}
         style={{
@@ -49,23 +55,46 @@ export default async function GymPage({
         </div>
       </div>
       <div className='flex'>
-        <div className='flex-1'></div>
-        <div className='flex-[0.5]'>
+        <div className='flex-1'>
+          <h2 className='text-xl font-medium'>Annoucements</h2>
+          <ul>
+            <li>
+              <p>Annoucement 1</p>
+            </li>
+          </ul>
+        </div>
+        <div className='flex-[0.5] flex gap-2 justify-end'>
           {gym?.users?.map((user: any) => (
-            <div key={user.id} className='relative p-4'>
-              <Image
-                src={user.images[0]}
-                alt={user.firstName}
-                fill
-                className='object-cover'
-              />
-              <div className='absolute inset-0 bg-gradient-to-t from-dark-500 to-dark-500/50' />
-              <div className='relative z-10'>
-                <p>{user.age}</p>
-                <p>{user.firstName}</p>
-                {/* <p>{user.split[0]}</p> */}
+            <>
+              <div key={user.id} className='relative p-4 flex-1'>
+                <Image
+                  src={user.images[0]}
+                  alt={user.firstName}
+                  fill
+                  className='object-cover'
+                />
+                <div className='absolute inset-0 bg-gradient-to-t from-dark-500 to-dark-500/50' />
+                <div className='relative z-10 h-20 flex flex-col justify-end'>
+                  <p>{user.age}</p>
+                  <p>{user.firstName}</p>
+                  {/* <p>{user.split[0]}</p> */}
+                </div>
               </div>
-            </div>
+              <div key={user.id} className='relative p-4 flex-1 '>
+                <Image
+                  src={user.images[0]}
+                  alt={user.firstName}
+                  fill
+                  className='object-cover'
+                />
+                <div className='absolute inset-0 bg-gradient-to-t from-dark-500 to-dark-500/50' />
+                <div className='relative z-10 h-20 flex flex-col justify-end'>
+                  <p>{user.age}</p>
+                  <p>{user.firstName}</p>
+                  {/* <p>{user.split[0]}</p> */}
+                </div>
+              </div>
+            </>
           ))}
         </div>
       </div>
