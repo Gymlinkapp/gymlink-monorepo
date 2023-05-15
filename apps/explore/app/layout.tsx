@@ -4,6 +4,7 @@ import { Montserrat } from 'next/font/google';
 import { dark } from '@clerk/themes';
 import Head from 'next/head';
 import { Metadata } from 'next';
+import MainNavbar from '@/components/MainNavbar';
 
 const montserrat = Montserrat({ subsets: ['latin'] });
 
@@ -28,7 +29,10 @@ export default function RootLayout({
       }}
     >
       <html lang='en' className='bg-dark-500 dark'>
-        <body className={montserrat.className}>{children}</body>
+        <body className={montserrat.className}>
+          {children}
+          <MainNavbar />
+        </body>
       </html>
     </ClerkProvider>
   );
