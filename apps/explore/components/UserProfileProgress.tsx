@@ -21,7 +21,7 @@ type OptionalUserFields = {
 export default function UserProfileProgress({ user }: Props) {
   const { age, bio, images }: RequredUserFields = user;
   const { gyms }: OptionalUserFields = user;
-  const [inputImages, setInputImages] = useState<string[]>([]);
+  const [inputImages, setInputImages] = useState<string[]>(images);
   const [inputBio, setInputBio] = useState<string>('');
   const [inputAge, setInputAge] = useState<number>(18);
 
@@ -39,8 +39,8 @@ export default function UserProfileProgress({ user }: Props) {
   };
 
   const hasAge = age > 0;
-  const hasBio = bio.length > 0;
-  const hasImages = images.length > 0;
+  const hasBio = bio || bio?.length > 0;
+  const hasImages = images.length > 1;
 
   const progressValue = () => {
     if (hasAge && hasBio && hasImages) {
@@ -57,9 +57,9 @@ export default function UserProfileProgress({ user }: Props) {
   if (progressValue() === 100) return null;
 
   return (
-    <div className='border-1 border-dark-400 rounded-xl'>
+    <div className='border-1 border-dark-400 rounded-xl p-12'>
       <div className='flex flex-col gap-2'>
-        <div className='flex items-center'>
+        <div className='flex flex-col-reverse md:flex-row md:items-center mb-6'>
           <div className='flex-1'>
             <h2 className='text-xl font-medium'>Profile Progress</h2>
             <p>
@@ -68,15 +68,15 @@ export default function UserProfileProgress({ user }: Props) {
             </p>
           </div>
           <div
-            className='radial-progress'
+            className='radial-progress text-accent'
             // @ts-ignore
             style={{ '--value': progressValue() }}
           >
             {progressValue()}%
           </div>
         </div>
-        <div className='flex gap-2'>
-          <div className='flex flex-col gap2'>
+        <div className='flex gap-2 flex-col md:flex-row'>
+          <div className='flex flex-col gap-2 flex-1'>
             {!hasAge && (
               <div>
                 <p>Age</p>
@@ -104,7 +104,7 @@ export default function UserProfileProgress({ user }: Props) {
               </div>
             )}
           </div>
-          <div>
+          <div className='flex-1'>
             <p>Your gym pics</p>
             <input
               type='file'
@@ -135,13 +135,25 @@ export default function UserProfileProgress({ user }: Props) {
               }}
               className='file-input file-input-bordered w-full max-w-xs'
             />
-            <div className='flex gap-2 flex-wrap'>
-              {inputImages.length > 0 &&
-                inputImages.map((image) => (
-                  <div key={image} className='relative w-32 h-32'>
-                    <Image src={image} fill alt='image' />
-                  </div>
-                ))}
+            <div className='flex gap-2 flex-col mt-4'>
+              <h4 className='text-md'>Chosen Images:</h4>
+
+              <div className='flex flex-wrap gap-2 w-full'>
+                {inputImages.length > 0 &&
+                  inputImages.map((image) => (
+                    <div
+                      key={image}
+                      className='relative flex-1 h-32 overflow-hidden rounded-xl'
+                    >
+                      <Image
+                        src={image}
+                        fill
+                        alt='image'
+                        className='object-cover'
+                      />
+                    </div>
+                  ))}
+              </div>
             </div>
           </div>
         </div>
@@ -149,7 +161,7 @@ export default function UserProfileProgress({ user }: Props) {
       <div>
         <button
           onClick={updateUserProfile}
-          className='btn btn-primary btn-block'
+          className='btn btn-primary btn-block mt-12'
         >
           Save
         </button>
