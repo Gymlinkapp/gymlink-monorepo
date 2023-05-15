@@ -1,10 +1,13 @@
 'use client';
 import MainNavbar from '@/components/MainNavbar';
+import { formatGymNameToSlug } from '@/utils/formatGymNameToSlug';
+import { SelectedGymAndLatLong } from '@/utils/types/misc';
 import wrapGooglePhotoRefernce from '@/utils/wrapGooglePhotoReference';
 import { UserButton, useUser, SignInButton, useAuth } from '@clerk/nextjs';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 
 type Input = {
@@ -14,6 +17,7 @@ type Input = {
   firstName?: string;
   lastName?: string;
   gym: {
+    id?: string;
     name: string;
     latitude: number;
     theme: string;
@@ -24,30 +28,6 @@ type Input = {
   };
   longitude: number;
   latitude: number;
-};
-
-type SelectedGymAndLatLong = {
-  gym: {
-    name: string;
-    theme: string;
-    latitude: number;
-    longitude: number;
-    adddress: string;
-    photos: { photo_reference: string }[];
-    placeId: string;
-  };
-  longitude: number;
-  latitude: number;
-};
-
-type Gym = {
-  name: string;
-  theme: string;
-  latitude: number;
-  longitude: number;
-  adddress: string;
-  photos: { photo_reference: string }[];
-  placeId: string;
 };
 
 export default function Home() {
@@ -133,10 +113,12 @@ export default function Home() {
               )})`,
             }}
           >
-            <div className='z-20 relative'>
-              <h4 className='text-xl font-medium'>{gym.name}</h4>
-            </div>
-            <div className='absolute inset-0 z-0 bg-gradient-to-t from-dark-500 to-dark-500/25'></div>
+            <Link href={`/gym/${gym.placeId}`}>
+              <div className='z-20 relative'>
+                <h4 className='text-xl font-medium'>{gym.name}</h4>
+              </div>
+              <div className='absolute inset-0 z-0 bg-gradient-to-t from-dark-500 to-dark-500/25'></div>
+            </Link>
           </li>
         ))}
       </ul>

@@ -6,6 +6,7 @@ type Data = {} & GenericData;
 
 type Input = {
   gymId: string;
+  placeId: string;
 };
 
 export default async function handler(
@@ -13,11 +14,21 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const input = req.body as Input;
-  const gym = await prisma.gym.findFirst({
-    where: {
-      id: input.gymId,
-    },
-  });
+  let gym;
+
+  if (input.gymId && !input.placeId) {
+    gym = await prisma.gym.findFirst({
+      where: {
+        id: input.gymId,
+      },
+    });
+  } else if (input.placeId && !input.gymId) {
+    gym = await prisma.gym.findFirst({
+      where: {
+        placeId: input.placeId,
+      },
+    });
+  }
 
   if (!gym) {
     res.status(401).json({

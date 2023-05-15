@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 
 export default function Home() {
   const router = useRouter();
-  const { user } = useUser();
+  const { user, isSignedIn } = useUser();
 
   useEffect(() => {
     const gym = localStorage.getItem('selectedGym');
@@ -16,6 +16,10 @@ export default function Home() {
 
     if (!user && !gym) {
       router.push('/onboarding/1-gym-selection');
+    }
+
+    if (isSignedIn && user) {
+      router.push('/home');
     }
   }, [user]);
   return (

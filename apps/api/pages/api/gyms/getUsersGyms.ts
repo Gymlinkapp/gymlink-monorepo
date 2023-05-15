@@ -18,6 +18,8 @@ export default async function handler(
     include: {
       gym: {
         select: {
+          id: true,
+          placeId: true,
           name: true,
           latitude: true,
           longitude: true,
