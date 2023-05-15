@@ -8,7 +8,7 @@ type Data = {
 } & GenericData;
 
 type Input = {
-  email: string;
+  userId: string;
 };
 
 export default async function handler(
@@ -17,16 +17,16 @@ export default async function handler(
 ) {
   const input = req.body as Input;
   console.log('input', input);
-  if (!input.email) {
+  if (!input.userId) {
     res.status(400).json({
-      message: 'No email provided',
+      message: 'No userId provided',
     });
     return;
   }
   try {
     const user = await prisma.user.findUnique({
       where: {
-        email: input.email,
+        id: input.userId,
       },
       include: {
         userPrompts: true,
