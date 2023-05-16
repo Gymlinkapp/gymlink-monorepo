@@ -12,12 +12,16 @@
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   },
   "dependencies": {
+    "@clerk/nextjs": "^4.18.0",
     "@faker-js/faker": "^7.6.0",
     "@prisma/client": "^4.12.0",
     "@supabase/supabase-js": "^2.20.0",
+    "@tanstack/react-query": "^4.29.7",
     "@types/react": "18.0.35",
     "@types/react-dom": "18.0.11",
+    "axios": "^1.4.0",
     "bcrypt": "^5.1.0",
+    "daisyui": "^2.51.6",
     "eslint": "8.38.0",
     "eslint-config-next": "13.3.0",
     "jsonwebtoken": "^9.0.0",

@@ -11,12 +11,14 @@ type Input = {
   lastName?: string;
   images?: string[];
   gym: {
-    name: string;
-    latitude: number;
-    longitude: number;
-    adddress: string;
-    photos: { photo_reference: string }[];
-    placeId: string;
+    gym: {
+      name: string;
+      latitude: number;
+      longitude: number;
+      adddress: string;
+      photos: { photo_reference: string }[];
+      placeId: string;
+    };
   };
   longitude: number;
   latitude: number;
@@ -32,7 +34,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const input = req.body as Input;
-  console.log('input2 ', input);
+  const gym = input.gym.gym;
 
   if (!input.email) {
     res.status(401).json({
@@ -49,45 +51,82 @@ export default async function handler(
       },
     });
 
-    console.log('user', user);
-
     if (!user) {
-      const newUser = await prisma.user.create({
-        data: {
-          id: input.id || randomUUID(),
-          phoneNumber: generateRandomPhoneNumber(),
-          firstName: input.firstName || 'User',
-          lastName: input.lastName || 'User',
-          email: input.email,
-          gym: {
+      await prisma.gym.upsert({
+        where: {
+          placeId: gym.placeId,
+        },
+        update: {
+          users: {
             connectOrCreate: {
               where: {
-                placeId: input.gym.placeId,
+                id: input.id || randomUUID(),
               },
               create: {
-                name: input.gym.name,
-                latitude: input.gym.latitude,
-                longitude: input.gym.longitude,
-                address: input.gym.adddress,
-                photos: input.gym.photos,
-                placeId: input.gym.placeId,
+                id: input.id || randomUUID(),
+                phoneNumber: generateRandomPhoneNumber(),
+                firstName: input.firstName || 'User',
+                lastName: input.lastName || 'User',
+                email: input.email,
+                longitude: input.longitude,
+                latitude: input.latitude,
+                password: '',
+                images: input.images || [],
+                tempJWT: '',
+                age: 0,
+                filterGender: [],
+                filterGoals: [],
+                filterSkillLevel: [],
+                filterWorkout: [],
+                filterGoingToday: false,
+                tags: [],
+                blockedUsers: [],
+                bio: '',
               },
             },
           },
-          longitude: input.longitude,
-          latitude: input.latitude,
-          password: '',
-          images: input.images || [],
-          tempJWT: '',
-          age: 0,
-          filterGender: [],
-          filterGoals: [],
-          filterSkillLevel: [],
-          filterWorkout: [],
-          filterGoingToday: false,
-          tags: [],
-          blockedUsers: [],
-          bio: '',
+        },
+        create: {
+          name: gym.name,
+          latitude: gym.latitude,
+          longitude: gym.longitude,
+          address: gym.adddress,
+          photos: gym.photos,
+          placeId: gym.placeId,
+          users: {
+            connectOrCreate: {
+              where: {
+                id: input.id || randomUUID(),
+              },
+              create: {
+                id: input.id || randomUUID(),
+                phoneNumber: generateRandomPhoneNumber(),
+                firstName: input.firstName || 'User',
+                lastName: input.lastName || 'User',
+                email: input.email,
+                longitude: input.longitude,
+                latitude: input.latitude,
+                password: '',
+                images: input.images || [],
+                tempJWT: '',
+                age: 0,
+                filterGender: [],
+                filterGoals: [],
+                filterSkillLevel: [],
+                filterWorkout: [],
+                filterGoingToday: false,
+                tags: [],
+                blockedUsers: [],
+                bio: '',
+              },
+            },
+          },
+        },
+      });
+
+      const newUser = await prisma.user.findUnique({
+        where: {
+          email: input.email,
         },
       });
 

@@ -8,6 +8,7 @@ const nextConfig = {
       'source.unsplash.com',
       'ltlwfcdwjczwsvohawml.supabase.co',
       'images.unsplash.com',
+      'maps.googleapis.com',
     ],
   },
 };
