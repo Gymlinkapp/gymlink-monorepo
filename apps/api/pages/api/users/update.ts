@@ -12,11 +12,14 @@ type Data = {
 
 type Input = {
   token: string;
+  userId: string;
   firstName?: string;
   lastName?: string;
   bio?: string;
+  age?: number;
   email?: string;
   tags?: string[];
+  images?: string[];
   authSteps?: number;
 };
 
@@ -25,14 +28,25 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const input = req.body as Input;
-  const decoded = decode(input.token as string) as JWT;
+
+  let user: User | null = null;
 
   try {
-    const user = await prisma.user.findUnique({
-      where: {
-        email: decoded.email,
-      },
-    });
+    if (input.token) {
+      const decoded = decode(input.token as string) as JWT;
+
+      user = await prisma.user.findUnique({
+        where: {
+          email: decoded.email,
+        },
+      });
+    } else if (input.userId) {
+      user = await prisma.user.findUnique({
+        where: {
+          id: input.userId,
+        },
+      });
+    }
 
     if (!user) {
       console.log('User not found');
@@ -72,7 +86,11 @@ export default async function handler(
         lastName: input.lastName || user.lastName,
         email: input.email || user.email,
         bio: input.bio || user.bio,
+        age: input.age || 18,
         tags: (input.tags as string[]) || user.tags,
+        images:
+          [...(input.images as string[]), ...(user.images as string[])] ||
+          user.images,
         authSteps:
           input.authSteps !== undefined ? input.authSteps : user.authSteps,
       },

@@ -30,6 +30,7 @@ export default async function handler(
       include: {
         users: {
           select: {
+            id: true,
             email: true,
             age: true,
             firstName: true,

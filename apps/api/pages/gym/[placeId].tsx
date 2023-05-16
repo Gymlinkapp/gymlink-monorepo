@@ -1,6 +1,7 @@
 import { useGym } from '@/hooks/useGetGym';
 import wrapGooglePhotoRefernce from '@/lib/wrapGooglePhoto';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 
 export default function GymPage() {
@@ -53,12 +54,14 @@ export default function GymPage() {
                   }}
                   key={user.id}
                 >
-                  <div className='absolute bg-dark-500/25 inset-0' />
-                  <div className='relative'>
-                    <span>{user.age}</span>
-                    <h5 className='text-lg font-medium'>{user.firstName}</h5>
-                    <p>{user.lastName}</p>
-                  </div>
+                  <Link href={`/user/${user.id}`}>
+                    <div className='absolute bg-dark-500/25 inset-0' />
+                    <div className='relative'>
+                      <span>{user.age}</span>
+                      <h5 className='text-lg font-medium'>{user.firstName}</h5>
+                      <p>{user.lastName}</p>
+                    </div>
+                  </Link>
                 </li>
               ))}
             </ul>
