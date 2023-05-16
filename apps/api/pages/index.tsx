@@ -1,51 +1,41 @@
+import UserContext from '@/contexts/UserContext';
+import { useGetUser } from '@/hooks/useGetUser';
+import useSaveUser from '@/hooks/useSaveUser';
+import wrapGooglePhotoRefernce from '@/lib/wrapGooglePhoto';
 import { useUser } from '@clerk/nextjs';
-import { Gym, User } from '@prisma/client';
-import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
-import { useEffect } from 'react';
 
-interface Input extends Partial<User> {
-  gym?: Gym;
-}
 export default function Home() {
-  const { user, isSignedIn } = useUser();
-
-  const saveUserMutation = useMutation(
-    (user: Input) => axios.post('/api/auth/baseWebAccount', user),
-    {
-      onSuccess: (data) => {
-        if (data) {
-          localStorage.setItem('isUserSavedInDB', 'true');
-        }
-      },
-      onError: (error) => {
-        console.error('Failed to save user to database:', error);
-      },
-    }
+  const {} = useSaveUser();
+  const { user: clerkUser } = useUser();
+  const { data: user, isLoading } = useGetUser(
+    clerkUser?.emailAddresses[0].emailAddress || ''
   );
+  console.log(user);
 
-  useEffect(() => {
-    const isUserSavedInDB = localStorage.getItem('isUserSavedInDB');
-    const gym = JSON.parse(localStorage.getItem('selectedGym') || '{}') as Gym;
+  if (isLoading || !user) return <div>Loading...</div>;
 
-    if (
-      user &&
-      isSignedIn &&
-      gym &&
-      (!isUserSavedInDB || isUserSavedInDB === 'false')
-    ) {
-      saveUserMutation.mutate({
-        id: user.id,
-        email: user.emailAddresses[0].emailAddress,
-        firstName: user.firstName as string,
-        lastName: user.lastName as string,
-        images: [user.profileImageUrl],
-        gym,
-        longitude: gym.longitude,
-        latitude: gym.latitude,
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  return <div>testt</div>;
+  return (
+    <main className='mx-auto max-w-5xl'>
+      <h1 className='text-4xl font-bold'>Home | Your Main Gym</h1>
+      <div>
+        <div
+          className='bg-cover overflow-hidden rounded-3xl p-12 bg-no-repeat bg-center relative'
+          style={{
+            backgroundImage: `url(${wrapGooglePhotoRefernce(
+              (user.gym.photos as any)[0].photo_reference
+            )})`,
+          }}
+        >
+          <div className='bg-gradient-to-t from-dark-500 to-dark-500/50 absolute inset-0' />
+          <div className='relative flex flex-col gap-2'>
+            <span className='bg-light-500 rounded-full px-4 py-2 text-dark-500 text-xs w-fit'>
+              Members {user.gym.users.length}
+            </span>
+            <h2 className='font-medium text-3xl'>{user.gym.name}</h2>
+            <p>{user.gym.address}</p>
+          </div>
+        </div>
+      </div>
+    </main>
+  );
 }
