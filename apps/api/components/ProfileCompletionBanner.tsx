@@ -4,23 +4,13 @@ import Link from 'next/link';
 
 type Props = {
   user: FinalUser;
+  completionPercentage: number;
 };
 
-export default function ProfileCompletionBanner({ user }: Props) {
-  const calculateCompletion = (user: FinalUser) => {
-    const images = user.images as string[];
-    let completedFields = 0;
-    const totalFields = 3; // age, images, bio
-
-    if (!user) return 0;
-    if (user.age > 0) completedFields++;
-    if (user.images && images.length >= 1) completedFields++;
-    if (!user.bio || user.bio.length > 0) completedFields++;
-
-    return (completedFields / totalFields) * 100;
-  };
-
-  const completionPercentage = calculateCompletion(user);
+export default function ProfileCompletionBanner({
+  user,
+  completionPercentage,
+}: Props) {
   console.log(completionPercentage);
   console.log(user.age);
   return (
