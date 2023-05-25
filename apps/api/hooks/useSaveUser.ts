@@ -1,6 +1,6 @@
 import { useUser } from '@clerk/nextjs';
 import { Gym, User } from '@prisma/client';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { useEffect } from 'react';
 
@@ -10,6 +10,7 @@ interface Input extends Partial<User> {
 
 const useSaveUser = () => {
   const { user, isSignedIn } = useUser();
+  const queryClient = useQueryClient();
 
   const saveUserMutation = useMutation(
     (user: Input) => axios.post('/api/auth/baseWebAccount', user),

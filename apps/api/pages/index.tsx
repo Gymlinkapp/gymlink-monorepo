@@ -4,6 +4,8 @@ import useSaveUser from '@/hooks/useSaveUser';
 import wrapGooglePhotoRefernce from '@/lib/wrapGooglePhoto';
 import { useUser } from '@clerk/nextjs';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 export default function Home() {
   const {} = useSaveUser();
@@ -11,7 +13,24 @@ export default function Home() {
   const { data: user, isLoading } = useGetUser(
     clerkUser?.emailAddresses[0].emailAddress || ''
   );
-  console.log(user);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!user || !clerkUser) {
+      router.push('/');
+    }
+
+    const userInterests = (user?.interests as string[]) || [];
+    const userImages = (user?.images as string[]) || [];
+
+    // if user is not onboarded, redirect to onboarding
+    if (
+      user &&
+      (!user.city || userImages.length <= 0 || userInterests.length <= 0)
+    ) {
+      router.push('/onboarding/basics');
+    }
+  }, []);
 
   if (isLoading || !user) return <div>Loading...</div>;
 
