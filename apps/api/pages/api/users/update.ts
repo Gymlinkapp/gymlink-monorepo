@@ -23,6 +23,7 @@ type Input = {
   authSteps?: number;
   city?: string;
   interests?: string[];
+  twitter?: string;
 };
 
 export default async function handler(
@@ -91,6 +92,7 @@ export default async function handler(
         age: input.age || 18,
         city: input.city || user.city,
         interests: input.interests || (user.interests as string[]),
+        twitter: input.twitter || user.twitter,
         tags: (input.tags as string[]) || user.tags,
         images:
           [...(input.images as string[]), ...(user.images as string[])] ||

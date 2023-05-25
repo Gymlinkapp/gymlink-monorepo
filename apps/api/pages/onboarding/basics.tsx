@@ -78,6 +78,7 @@ export default function BasicsPage() {
   const [city, setCity] = useState('');
   const [inputImages, setInputImages] = useState<string[]>([]);
   const [age, setAge] = useState(18);
+  const [twitter, setTwitter] = useState('');
   const [uploadingImageLoading, setUploadingImageLoading] = useState(false);
   console.log('interests', interests);
   console.log('city', city);
@@ -124,7 +125,7 @@ export default function BasicsPage() {
                 <h4>Interests</h4>
                 <div className='grid grid-cols-3 gap-2'>
                   <InterestCheckbox label='Gym' name='gym' onCheck={onCheck} />
-                  <InterestCheckbox label='Jog' name='jog' onCheck={onCheck} />
+                  <InterestCheckbox label='Run' name='run' onCheck={onCheck} />
                   <InterestCheckbox
                     label='Walk'
                     name='walk'
@@ -162,6 +163,15 @@ export default function BasicsPage() {
                   }
 
                   setAge(parseInt(e.target.value));
+                }}
+              />
+              <TextInput
+                label='Twitter'
+                name='twitter'
+                placeholder='@gymlink_app'
+                value={twitter}
+                onChange={(e) => {
+                  setTwitter(e.target.value);
                 }}
               />
             </div>
@@ -234,6 +244,7 @@ export default function BasicsPage() {
                 city,
                 images: inputImages,
                 age,
+                twitter,
               });
             }}
           >
