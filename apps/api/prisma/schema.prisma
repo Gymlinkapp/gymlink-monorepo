@@ -53,6 +53,10 @@ model User {
     verificationCode String?
     verified         Boolean? @default(false)
 
+    // temp for buildspace irl
+    city      String?
+    interests Json? // eg. ["jog", "gym"]
+
     gym       Gym?     @relation(fields: [gymId], references: [id])
     gymId     String?
     split     Split?   @relation(fields: [splitId], references: [id])
