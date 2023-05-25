@@ -1,6 +1,8 @@
 import { supabase } from '@/lib/supabase';
 import { useUser } from '@clerk/nextjs';
+import { useMutation } from '@tanstack/react-query';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { MouseEvent, useState } from 'react';
 
 const InterestCheckbox = ({
@@ -32,6 +34,7 @@ export default function BasicsPage() {
   const [inputImages, setInputImages] = useState<string[]>([]);
   const [age, setAge] = useState(18);
   const [uploadingImageLoading, setUploadingImageLoading] = useState(false);
+  const router = useRouter();
   const { user } = useUser();
   const onCheck = (e: MouseEvent<HTMLInputElement, MouseEvent>) => {
     // @ts-ignore -- e.target.name & e.target.checked
@@ -43,6 +46,19 @@ export default function BasicsPage() {
       setInterests(interests.filter((interest) => interest !== e.target.name));
     }
   };
+
+  //   const mutation = useMutation(() => {}), {
+  //     onSuccess: () => {
+  //       if (user) {
+  //         router.push(`/user/${user.id}`);
+  //       }
+  //       // Handle successful mutation, e.g., show a success notification
+  //     },
+  //     onError: (error) => {
+  //       // Handle error, e.g., show an error notification
+  //       console.log(error);
+  //     },
+  //   })
 
   if (!user) return <div>Loading...</div>;
   return (

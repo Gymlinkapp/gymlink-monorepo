@@ -1,14 +1,16 @@
-import { SignInButton, useUser } from '@clerk/nextjs';
+import useSaveUser from '@/hooks/useSaveUser';
+import { SignInButton, UserButton, useUser } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
 export default function SignUpPage() {
   const { user, isSignedIn } = useUser();
+  const { savedUser } = useSaveUser();
   const router = useRouter();
 
   useEffect(() => {
-    if (user && isSignedIn) {
-      router.push('/');
+    if (savedUser) {
+      router.push(`/onboarding/basics`);
     }
   }, [isSignedIn, user]);
 
@@ -19,6 +21,7 @@ export default function SignUpPage() {
           <h1 className='font-medium text-2xl'>Sign up</h1>
           <p className='text-light-400'>Sign up to see the dashboard</p>
           <SignInButton mode='modal'>Sign Up</SignInButton>
+          <UserButton />
         </div>
       )}
     </main>
