@@ -7,6 +7,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      borderWidth: {
+        1: '0.5px',
+      },
       colors: {
         'dark-500': '#070707',
         'dark-400': '#1E1E1E',
@@ -65,7 +68,7 @@ module.exports = {
           secondary: '#1E1E1E',
           accent: '#724CF9',
           neutral: '#1E1E1E',
-          'base-100': '#444444',
+          'base-100': '#1E1E1E',
           info: '#3ABFF8',
           success: '#36D399',
           warning: '#FBBD23',

@@ -269,12 +269,8 @@ function generateRandomUserData(): Prisma.UserCreateInput {
     gym: {
       create: {
         name: 'Fit4Less',
-        location: {
-          create: {
-            lat: generateRandomLocation().lat,
-            long: generateRandomLocation().long,
-          },
-        },
+        longitude: generateRandomLocation().long,
+        latitude: generateRandomLocation().lat,
       },
     },
   };
@@ -412,12 +408,8 @@ async function main() {
       gym: {
         create: {
           name: 'Fit4Less',
-          location: {
-            create: {
-              lat: 42.300916870848894,
-              long: -82.97919754434378,
-            },
-          },
+          latitude: 42.300916870848894,
+          longitude: -82.97919754434378,
         },
       },
 

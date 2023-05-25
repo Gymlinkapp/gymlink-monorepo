@@ -3,7 +3,7 @@
   "version": "0.2.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --port 3000",
+    "dev": "next dev --port 3001",
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint"
@@ -12,19 +12,27 @@
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   },
   "dependencies": {
+    "@clerk/nextjs": "^4.18.0",
     "@faker-js/faker": "^7.6.0",
+    "@hookform/resolvers": "^3.1.0",
+    "@phosphor-icons/react": "^2.0.9",
     "@prisma/client": "^4.12.0",
     "@supabase/supabase-js": "^2.20.0",
+    "@tanstack/react-query": "^4.29.7",
     "@types/react": "18.0.35",
     "@types/react-dom": "18.0.11",
+    "axios": "^1.4.0",
     "bcrypt": "^5.1.0",
+    "daisyui": "^2.51.6",
     "eslint": "8.38.0",
     "eslint-config-next": "13.3.0",
     "jsonwebtoken": "^9.0.0",
     "next": "13.3.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "twilio": "^4.10.0"
+    "react-hook-form": "^7.43.9",
+    "twilio": "^4.10.0",
+    "zod": "^3.21.4"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",

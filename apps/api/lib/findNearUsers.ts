@@ -1,5 +1,5 @@
-import { Gym, PrismaClient, User } from "@prisma/client";
-import { haversineDistance } from "./haversineDistance";
+import { Gym, PrismaClient, User } from '@prisma/client';
+import { haversineDistance } from './haversineDistance';
 
 const prisma = new PrismaClient();
 
@@ -57,16 +57,10 @@ export const findNearUsers = async (
 
       const gymDistances = await Promise.all(
         gymLocations.map(async (gym) => {
-          const gymLocation = await prisma.location.findUnique({
-            where: {
-              id: gym.locationId,
-            },
-          });
-          if (!gymLocation) return Infinity;
-
+          if (!gym.latitude || !gym.longitude) return Infinity;
           const distance = haversineDistance(userLocation, {
-            latitude: gymLocation.lat,
-            longitude: gymLocation.long,
+            latitude: gym.latitude,
+            longitude: gym.longitude,
           });
 
           return distance;

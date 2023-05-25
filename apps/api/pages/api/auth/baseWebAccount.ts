@@ -1,12 +1,27 @@
-import { GenericData } from "@/types/GenericData";
-import { NextApiRequest, NextApiResponse } from "next";
-import prisma from "@/lib/prisma";
+import { GenericData } from '@/types/GenericData';
+import { NextApiRequest, NextApiResponse } from 'next';
+import prisma from '@/lib/prisma';
+import { randomUUID } from 'crypto';
 type Data = {} & GenericData;
 type Input = {
   baseWebAccount?: boolean;
+  id?: string;
   email?: string;
   firstName?: string;
   lastName?: string;
+  images?: string[];
+  gym: {
+    gym: {
+      name: string;
+      latitude: number;
+      longitude: number;
+      adddress: string;
+      photos: { photo_reference: string }[];
+      placeId: string;
+    };
+  };
+  longitude: number;
+  latitude: number;
 };
 
 const generateRandomPhoneNumber = () => {
@@ -18,72 +33,117 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  // Set CORS headers
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET,OPTIONS,PATCH,DELETE,POST,PUT");
-  res.setHeader("Access-Control-Allow-Headers", "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization");
-  res.setHeader("Access-Control-Allow-Credentials", "true");
+  const input = req.body as Input;
+  const gym = input.gym.gym;
 
-  // Handle the OPTIONS request
-  if (req.method === "OPTIONS") {
-    res.status(200).end();
+  if (!input.email) {
+    res.status(401).json({
+      error: 'Unauthorized - no email',
+    });
     return;
   }
 
-  const input = req.body as Input;
-  if (
-    input.baseWebAccount &&
-    input.email &&
-    input.firstName &&
-    input.lastName
-  ) {
-    // if the user already exists
-    try {
-      // if a user exists dont create a new one
-      const user = await prisma.user.findUnique({
+  try {
+    // if a user exists dont create a new one
+    const user = await prisma.user.findUnique({
+      where: {
+        email: input.email,
+      },
+    });
+
+    if (!user) {
+      await prisma.gym.upsert({
+        where: {
+          placeId: gym.placeId,
+        },
+        update: {
+          users: {
+            connectOrCreate: {
+              where: {
+                id: input.id || randomUUID(),
+              },
+              create: {
+                id: input.id || randomUUID(),
+                phoneNumber: generateRandomPhoneNumber(),
+                firstName: input.firstName || 'User',
+                lastName: input.lastName || 'User',
+                email: input.email,
+                longitude: input.longitude,
+                latitude: input.latitude,
+                password: '',
+                images: input.images || [],
+                tempJWT: '',
+                age: 0,
+                filterGender: [],
+                filterGoals: [],
+                filterSkillLevel: [],
+                filterWorkout: [],
+                filterGoingToday: false,
+                tags: [],
+                blockedUsers: [],
+                bio: '',
+              },
+            },
+          },
+        },
+        create: {
+          name: gym.name,
+          latitude: gym.latitude,
+          longitude: gym.longitude,
+          address: gym.adddress,
+          photos: gym.photos,
+          placeId: gym.placeId,
+          users: {
+            connectOrCreate: {
+              where: {
+                id: input.id || randomUUID(),
+              },
+              create: {
+                id: input.id || randomUUID(),
+                phoneNumber: generateRandomPhoneNumber(),
+                firstName: input.firstName || 'User',
+                lastName: input.lastName || 'User',
+                email: input.email,
+                longitude: input.longitude,
+                latitude: input.latitude,
+                password: '',
+                images: input.images || [],
+                tempJWT: '',
+                age: 0,
+                filterGender: [],
+                filterGoals: [],
+                filterSkillLevel: [],
+                filterWorkout: [],
+                filterGoingToday: false,
+                tags: [],
+                blockedUsers: [],
+                bio: '',
+              },
+            },
+          },
+        },
+      });
+
+      const newUser = await prisma.user.findUnique({
         where: {
           email: input.email,
         },
       });
 
-      if (!user) {
-        const newUser = await prisma.user.create({
-          data: {
-            phoneNumber: generateRandomPhoneNumber(),
-            firstName: input.firstName,
-            lastName: input.lastName,
-            email: input.email,
-            password: "",
-            images: [],
-            tempJWT: "",
-            age: 0,
-            filterGender: [],
-            filterGoals: [],
-            filterSkillLevel: [],
-            filterWorkout: [],
-            filterGoingToday: false,
-            tags: [],
-            blockedUsers: [],
-            bio: "",
-          },
-        });
-        res.status(200).json(newUser);
-        return;
-      }
-
-      res.status(200).json(user);
-      return;
-    } catch (error) {
-      console.log(error);
-
-      res.status(401).json({
-        error: "Unauthorized",
-      });
+      console.log('newUser', newUser);
+      res.status(200).json(newUser);
       return;
     }
-  }
 
-  res.status(401).json({
-    error: "Unauthorized",
-  });
+    res.status(200).json(user);
+    return;
+  } catch (error) {
+    console.log('oops');
+    console.log(error);
+
+    res.status(401).json({
+      error: 'Unauthorized',
+    });
+    return;
+  }
 }

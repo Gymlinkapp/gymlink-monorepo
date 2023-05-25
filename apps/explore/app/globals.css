@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 html {
-  @apply bg-dark-500;
+  @apply bg-dark-500 overflow-x-hidden;
 }
 
 body {
