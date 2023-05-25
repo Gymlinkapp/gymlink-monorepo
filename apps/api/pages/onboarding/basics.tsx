@@ -1,6 +1,8 @@
+import { useGetUser } from '@/hooks/useGetUser';
 import { supabase } from '@/lib/supabase';
 import { useUser } from '@clerk/nextjs';
 import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { MouseEvent, useState } from 'react';
@@ -62,6 +64,15 @@ const TextInput = ({
   );
 };
 
+const updateUser = async (payload: any) => {
+  try {
+    const { data } = await axios.post('/api/users/update', payload);
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export default function BasicsPage() {
   const [interests, setInterests] = useState([]);
   const [city, setCity] = useState('');
@@ -72,7 +83,10 @@ export default function BasicsPage() {
   console.log('city', city);
   console.log('inputImages', inputImages);
   const router = useRouter();
-  const { user } = useUser();
+  const { user: clerkUser } = useUser();
+  const { data: user } = useGetUser(
+    clerkUser?.emailAddresses[0].emailAddress ?? ''
+  );
   const onCheck = (e: MouseEvent<HTMLInputElement, MouseEvent>) => {
     // @ts-ignore -- e.target.name & e.target.checked
     if (e.target.checked) {
@@ -84,20 +98,15 @@ export default function BasicsPage() {
     }
   };
 
-  //   const mutation = useMutation(() => {}), {
-  //     onSuccess: () => {
-  //       if (user) {
-  //         router.push(`/user/${user.id}`);
-  //       }
-  //       // Handle successful mutation, e.g., show a success notification
-  //     },
-  //     onError: (error) => {
-  //       // Handle error, e.g., show an error notification
-  //       console.log(error);
-  //     },
-  //   })
+  const mutation = useMutation(updateUser, {
+    onSuccess: () => {
+      localStorage.setItem('userFinished', JSON.stringify(true));
+      router.push('/');
+    },
+  });
 
-  if (!user) return <div>Loading...</div>;
+  if (!clerkUser || !user) return <div>Loading...</div>;
+  console.log(user);
   return (
     <main className='h-screen grid place-items-center bg-dark-500'>
       <div className='border-1 border-dark-400 rounded-xl p-12'>
@@ -144,8 +153,16 @@ export default function BasicsPage() {
                 label='Age'
                 name='age'
                 placeholder='Age'
-                value={age.toString()}
-                onChange={(e) => setAge(parseInt(e.target.value))}
+                value={age.toString() || String(17)}
+                onChange={(e) => {
+                  // if empty string set 0
+                  if (e.target.value === '') {
+                    setAge(0);
+                    return;
+                  }
+
+                  setAge(parseInt(e.target.value));
+                }}
               />
             </div>
             <div>
@@ -162,7 +179,9 @@ export default function BasicsPage() {
                     if (!images) return;
                     // list through every FileList
                     images.map(async (image) => {
-                      const bucketPath = `user-${user.id}-${Math.random()}`;
+                      const bucketPath = `user-${
+                        clerkUser.id
+                      }-${Math.random()}`;
                       const { data, error } = await supabase.storage
                         .from('user-images/public')
                         .upload(bucketPath, image, {
@@ -206,7 +225,18 @@ export default function BasicsPage() {
         </div>
         {uploadingImageLoading && <p>Uploading image...</p>}
         {interests.length > 0 && city.length > 0 && inputImages.length > 0 && (
-          <button className='btn btn-primary w-full mt-6' onClick={() => {}}>
+          <button
+            className='btn btn-primary w-full mt-6'
+            onClick={() => {
+              mutation.mutate({
+                userId: clerkUser.id,
+                interests,
+                city,
+                images: inputImages,
+                age,
+              });
+            }}
+          >
             Next
           </button>
         )}

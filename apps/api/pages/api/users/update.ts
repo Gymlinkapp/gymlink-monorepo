@@ -21,6 +21,8 @@ type Input = {
   tags?: string[];
   images?: string[];
   authSteps?: number;
+  city?: string;
+  interests?: string[];
 };
 
 export default async function handler(
@@ -87,6 +89,8 @@ export default async function handler(
         email: input.email || user.email,
         bio: input.bio || user.bio,
         age: input.age || 18,
+        city: input.city || user.city,
+        interests: input.interests || (user.interests as string[]),
         tags: (input.tags as string[]) || user.tags,
         images:
           [...(input.images as string[]), ...(user.images as string[])] ||
