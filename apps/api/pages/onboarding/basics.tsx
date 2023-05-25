@@ -15,15 +15,49 @@ const InterestCheckbox = ({
   onCheck: (e: MouseEvent<HTMLInputElement, MouseEvent>) => void;
 }) => {
   return (
-    <div className='flex items-center'>
+    <div className='form-control'>
+      <label className='label cursor-pointer'>
+        <span className='label-text mr-2'>{label}</span>
+        <input
+          type='checkbox'
+          name={name}
+          className='checkbox'
+          onClick={(e) => {
+            onCheck(e as any);
+          }}
+        />
+      </label>
+    </div>
+  );
+};
+
+const TextInput = ({
+  label,
+  placeholder,
+  name,
+  value,
+  onChange,
+}: {
+  label: string;
+  name: string;
+  value: string;
+  placeholder: string;
+  onChange: (e: any) => void;
+}) => {
+  console.log(value);
+  return (
+    <div className='form-control w-full max-w-xs'>
+      <label className='label'>
+        <span className='label-text'>{label}</span>
+      </label>
       <input
+        type='text'
         name={name}
-        type='checkbox'
-        onClick={(e) => {
-          onCheck(e as any);
-        }}
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        className='input input-bordered w-full max-w-xs'
       />
-      <p>{label}</p>
     </div>
   );
 };
@@ -34,6 +68,9 @@ export default function BasicsPage() {
   const [inputImages, setInputImages] = useState<string[]>([]);
   const [age, setAge] = useState(18);
   const [uploadingImageLoading, setUploadingImageLoading] = useState(false);
+  console.log('interests', interests);
+  console.log('city', city);
+  console.log('inputImages', inputImages);
   const router = useRouter();
   const { user } = useUser();
   const onCheck = (e: MouseEvent<HTMLInputElement, MouseEvent>) => {
@@ -64,18 +101,31 @@ export default function BasicsPage() {
   return (
     <main className='h-screen grid place-items-center bg-dark-500'>
       <div className='border-1 border-dark-400 rounded-xl p-12'>
-        <div>
+        <div className='mb-6'>
           <h1 className='font-medium text-2xl'>How do you stay active</h1>
-          <p className='text-light-400'>Sign up to see the dashboard</p>
+          <p className='text-light-400'>
+            Enter information here and see others who might have the same
+            interests.
+          </p>
         </div>
         <div>
           <div className='flex gap-2'>
             <div>
               <div>
                 <h4>Interests</h4>
-                <div className='flex items-center gap-2'>
-                  <InterestCheckbox label='Gym' name='jog' onCheck={onCheck} />
+                <div className='grid grid-cols-3 gap-2'>
+                  <InterestCheckbox label='Gym' name='gym' onCheck={onCheck} />
                   <InterestCheckbox label='Jog' name='jog' onCheck={onCheck} />
+                  <InterestCheckbox
+                    label='Walk'
+                    name='walk'
+                    onCheck={onCheck}
+                  />
+                  <InterestCheckbox
+                    label='Swim'
+                    name='swim'
+                    onCheck={onCheck}
+                  />
                   <InterestCheckbox
                     label='Yoga'
                     name='yoga'
@@ -83,23 +133,20 @@ export default function BasicsPage() {
                   />
                 </div>
               </div>
-              <div>
-                <h4>City</h4>
-                <input
-                  onChange={(e) => setCity(e.target.value)}
-                  type='text'
-                  name='city'
-                />
-              </div>
-              <div>
-                <h4>Age</h4>
-                <input
-                  onChange={(e) => setAge(parseInt(e.target.value))}
-                  defaultValue={age}
-                  type='number'
-                  name='age'
-                />
-              </div>
+              <TextInput
+                label='City'
+                name='city'
+                placeholder='City'
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+              />
+              <TextInput
+                label='Age'
+                name='age'
+                placeholder='Age'
+                value={age.toString()}
+                onChange={(e) => setAge(parseInt(e.target.value))}
+              />
             </div>
             <div>
               <div className='flex flex-col'>
@@ -137,7 +184,7 @@ export default function BasicsPage() {
                   className='file-input file-input-bordered w-full max-w-xs'
                 />
               </div>
-              <div className='grid grid-cols-2'>
+              <div className='grid grid-cols-2 mt-6'>
                 {inputImages.length > 0 &&
                   inputImages.map((image) => (
                     <div
@@ -159,7 +206,9 @@ export default function BasicsPage() {
         </div>
         {uploadingImageLoading && <p>Uploading image...</p>}
         {interests.length > 0 && city.length > 0 && inputImages.length > 0 && (
-          <button onClick={() => {}}>Next</button>
+          <button className='btn btn-primary w-full mt-6' onClick={() => {}}>
+            Next
+          </button>
         )}
       </div>
     </main>
