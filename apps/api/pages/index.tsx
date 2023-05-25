@@ -35,7 +35,7 @@ export default function Home() {
     ) {
       router.push('/onboarding/basics');
     }
-  }, []);
+  }, [user, clerkUser]);
 
   console.log('users', users);
 
