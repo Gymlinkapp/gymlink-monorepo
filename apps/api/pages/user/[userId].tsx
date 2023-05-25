@@ -1,5 +1,6 @@
 import ProfileCompletionBanner from '@/components/ProfileCompletionBanner';
 import { useUserById } from '@/hooks/useGetUserById';
+import Layout from '@/layouts/Layout';
 import { FinalUser } from '@/types/user';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -33,7 +34,7 @@ export default function UserPage() {
   if (isLoading || !user) return <div>Loading...</div>;
 
   return (
-    <main className='mx-auto max-w-5xl bg-dark-500'>
+    <Layout back='/' title=''>
       {completionPercentage < 100 && (
         <ProfileCompletionBanner
           user={user}
@@ -55,6 +56,6 @@ export default function UserPage() {
           <p>{user.bio}</p>
         </div>
       </div>
-    </main>
+    </Layout>
   );
 }

@@ -9,6 +9,7 @@ const nextConfig = {
       'ltlwfcdwjczwsvohawml.supabase.co',
       'images.unsplash.com',
       'maps.googleapis.com',
+      'images.clerk.dev',
     ],
   },
 };

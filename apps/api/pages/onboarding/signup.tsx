@@ -18,9 +18,7 @@ export default function SignUpPage() {
         <div className='border-1 border-dark-400 rounded-xl p-12'>
           <h1 className='font-medium text-2xl'>Sign up</h1>
           <p className='text-light-400'>Sign up to see the dashboard</p>
-          <SignInButton mode='modal'>
-            <button className='btn btn-primary'>Sign Up</button>
-          </SignInButton>
+          <SignInButton mode='modal'>Sign Up</SignInButton>
         </div>
       )}
     </main>

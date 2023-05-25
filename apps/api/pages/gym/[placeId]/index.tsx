@@ -33,19 +33,22 @@ export default function GymPage() {
           <p>{gym.address}</p>
         </div>
       </div>
-      <main className='mx-auto max-w-5xl flex'>
+      <main className='mx-auto max-w-5xl flex md:flex-row flex-col-reverse p-6'>
         <div className='flex-1'>
           <h2 className='font-medium text-2xl'>Anncounments</h2>
         </div>
-        <div className='flex-[0.25] flex flex-col gap-4 items-end'>
+        <div className='flex-[0.25] flex justify-between flex-row-reverse md:flex-col gap-4 md:items-end'>
           <button className='btn btn-primary'>Join</button>
 
           <div className=''>
             <h4 className='font-medium text-xl text-right'>
               Get to know active members
             </h4>
-            <ul className='grid grid-cols-2'>
-              {gym.users?.map((user) => (
+            <button className='btn btn-secondary'>
+              <Link href={`/gym/${gym.placeId}/members`}>See all</Link>
+            </button>
+            <ul className='grid grid-rows-2 grid-cols-3'>
+              {gym.users?.slice(0, 6).map((user) => (
                 <li
                   className='bg-cover overflow-hidden rounded-3xl p-4 bg-no-repeat bg-center relative flex'
                   style={{
