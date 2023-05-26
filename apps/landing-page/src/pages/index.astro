@@ -4,39 +4,21 @@ import Button from "../components/Button.astro";
 ---
 
 <Layout title="Gymlink - Link up with like-minded fitness enthusiasts.">
-  <main class={`bg-dark-500 min-h-screen xl:pt-32 relative bg-cover bg-center`}>
-    <video
-      autoplay
-      muted
-      loop
-      id="bg-video"
-      class="absolute inset-0 h-full object-cover"
-    >
-      <source src="3d-mockups1-lower.mp4" type="video/mp4" />
-    </video>
-    <div
-      class="inset-0 bg-dark-500/75 md:bg-transparent md:bg-gradient-to-t md:from-dark-500 md:to-transparent z-30 absolute"
-    >
-    </div>
-    <section
-      class="flex flex-col gap-5 pt-48 px-2 lg:px-48 z-50 tracking-wider items-center"
-    >
-      <h1
-        class="text-light-500 text-center text-7xl md:text-[7rem] font-bold brightness-200 z-50"
-      >
-        Find your gym bro.
-      </h1>
-      <h3 class="text-light-400 text-xl text-center max-w-lg lg:max-w-5xl z-50">
-        Gymlink is an app to find gym goers at your gym or nearby gyms.
-      </h3>
-      <div class="flex flex-row z-50 gap-2">
-        <Button
-          variant="primary"
-          text="Sign Up"
-          url="https://explore.gymlink.app"
-        />
-        <Button variant="secondary" text="Download" url="https://testflight.apple.com/join/NTM6DRrW" />
-      </div>
+  <main class="bg-dark-500 min-h-screen xl:pt-32 relative bg-cover bg-center pt-48 text-white mx-auto text-center font-manrope">
+    <span class="bg-dark-400 border-[0.5px] border-dark-300 px-4 py-2 rounded-full">Link up with like-minded fitness enthusiasts</span>
+    <h1 class="text-5xl font-bold mt-4 mb-2">
+      Get active together.
+    </h1>
+    <h2 class="text-light-400 text-xl">
+      Link up with fitness enthusiasts and hit the gym, run, or do some yoga.
+    </h2>
+
+    <section class="grid grid-cols-3 max-w-4xl mx-auto mt-24 gap-4">
+      <video src="/irl-sf-4.mov" autoplay controls={false} loop muted class="h-full row-span-2 object-cover rounded-2xl"></video>
+      <video src="/irl-sf-1.mov" autoplay controls={false} loop muted class="aspect-[1/1.5] object-cover rounded-2xl"></video>
+      <video src="/irl-sf-6.mov" autoplay controls={false} loop muted class="aspect-[1/1.5] object-cover rounded-2xl"></video>
+      
+      <video src="/irl-sf-5.mov" autoplay controls={false} loop muted class="aspect-video col-span-2 object-cover rounded-2xl"></video>
     </section>
   </main>
 </Layout>

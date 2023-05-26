@@ -18,5 +18,8 @@
     "concurrently": "^8.0.1",
     "lerna": "^6.6.2",
     "nx": "15.9.4"
+  },
+  "dependencies": {
+    "@fontsource/manrope": "^5.0.1"
   }
 }
