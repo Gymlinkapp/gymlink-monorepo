@@ -1,0 +1,11 @@
+{
+  "expo": {
+    "scheme": "acme",
+    "userInterfaceStyle": "automatic",
+    "web": {
+      "bundler": "metro"
+    },
+    "name": "gymlink-react-native",
+    "slug": "gymlink-react-native"
+  }
+}
