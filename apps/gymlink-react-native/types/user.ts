@@ -3,4 +3,8 @@ export type User = {
   email: string;
   name: string;
   authStep: string;
+  gym: {
+    place_id: string;
+    description: string;
+  };
 };
