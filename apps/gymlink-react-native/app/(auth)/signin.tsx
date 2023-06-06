@@ -1,8 +1,19 @@
 import { useState } from 'react';
-import { Button, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { signInWithEmailAndPassword } from 'firebase/auth/react-native';
 import { auth } from '../../firebase';
-import { useRouter } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
+import Button from '../../components/ui/Button';
+import OnboardHeader from '../../components/ui/OnboardHeader';
+import { CaretLeft } from 'phosphor-react-native';
+import HeaderBackButton from '../../components/ui/HeaderBackButton';
 
 export default function Signin() {
   const [email, setEmail] = useState('');
@@ -28,35 +39,73 @@ export default function Signin() {
   // };
 
   return (
-    <View className='justify-center flex-1 bg-dark-500'>
-      <TextInput
-        className='bg-dark-400 px-2 py-6 rounded-md text-white'
-        placeholder='Email'
-        onChangeText={setEmail}
-        value={email}
-        autoComplete='email'
-        textContentType='emailAddress'
-      />
-      <TextInput
-        className='bg-dark-400 px-2 py-6 rounded-md text-white'
-        placeholder='Password'
-        onChangeText={setPassword}
-        value={password}
-        secureTextEntry
-      />
-      <Button title='Sign in' onPress={signIn} />
-      <View>
-        <Text className='text-light-400'>
-          Don't have an account?{' '}
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={{ flex: 1 }}
+    >
+      <View className='flex-1 bg-dark-500 p-6 justify-between'>
+        <Stack.Screen
+          options={{
+            title: 'Sign In',
+            headerLeft: () => (
+              <HeaderBackButton router={() => router.back()} text='Back' />
+            ),
+          }}
+        />
+        <OnboardHeader
+          title='Find your gym bro.'
+          subtitle='Tap in with your gym community, see what everyone is doing and get big
+        together.'
+        />
+        <View>
+          <View>
+            <View>
+              <Text className='text-light-400 font-akira-expanded text-xs'>
+                Email
+              </Text>
+              <TextInput
+                className='bg-dark-400 px-2 py-6 rounded-md text-white mb-2'
+                placeholder='Email'
+                onChangeText={setEmail}
+                value={email}
+                autoComplete='email'
+                textContentType='emailAddress'
+              />
+            </View>
+
+            <View>
+              <Text className='text-light-400 font-akira-expanded text-xs'>
+                Password
+              </Text>
+              <TextInput
+                className='bg-dark-400 px-2 py-6 rounded-md text-white'
+                placeholder='Password'
+                onChangeText={setPassword}
+                value={password}
+                secureTextEntry
+              />
+            </View>
+          </View>
+          <View className='items-center justify-center py-2'>
+            <Text className='text-light-400'>
+              Don't have an account?{' '}
+              <TouchableOpacity
+                onPress={() => {
+                  router.push('/signup');
+                }}
+              >
+                <Text className='underline text-white'>Sign up</Text>
+              </TouchableOpacity>
+            </Text>
+          </View>
           <TouchableOpacity
-            onPress={() => {
-              router.push('/signup');
-            }}
+            className='bg-light-500 w-full py-6 rounded-md items-center mt-12'
+            onPress={signIn}
           >
-            <Text className='font-bold text-white'>Sign up</Text>
+            <Text className='text-dark-500 font-akira-expanded'>Sign In</Text>
           </TouchableOpacity>
-        </Text>
+        </View>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }

@@ -1,9 +1,12 @@
 import { doc, setDoc } from 'firebase/firestore';
 import { useState } from 'react';
-import { Button, Text, TextInput, View } from 'react-native';
+import { Button, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { db } from '../../firebase';
-import { useRouter } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import { useAuth } from '../../context/auth';
+import OnboardLayout from '../../components/Layouts/OnboardLayout';
+import OnboardHeader from '../../components/ui/OnboardHeader';
+import HeaderBackButton from '../../components/ui/HeaderBackButton';
 
 export default function InputName() {
   const [name, setName] = useState('');
@@ -30,16 +33,34 @@ export default function InputName() {
     }
   };
   return (
-    <View className='justify-center flex-1 bg-dark-500'>
-      <TextInput
-        className='bg-dark-400 px-2 py-6 rounded-md text-white'
-        placeholder='Christopher Bumsted'
-        onChangeText={setName}
-        value={name}
-        autoComplete='name'
-        textContentType='name'
+    <OnboardLayout>
+      <Stack.Screen
+        options={{
+          title: 'Choose a name',
+          headerLeft: () => (
+            <HeaderBackButton router={() => router.back} text='Back' />
+          ),
+        }}
       />
-      <Button title='Done' onPress={chooseName} />
-    </View>
+      <OnboardHeader title='Choose a name.' subtitle='Strive for greatness.' />
+
+      <View>
+        <Text className='text-light-400 font-akira-expanded text-xs'>Name</Text>
+        <TextInput
+          className='bg-dark-400 px-2 py-6 rounded-md text-white'
+          placeholder='Christopher Bumsted'
+          onChangeText={setName}
+          value={name}
+          autoComplete='name'
+          textContentType='name'
+        />
+      </View>
+      <TouchableOpacity
+        className='bg-light-500 w-full py-6 rounded-md items-center mt-12'
+        onPress={chooseName}
+      >
+        <Text className='text-dark-500 font-akira-expanded'>Continue</Text>
+      </TouchableOpacity>
+    </OnboardLayout>
   );
 }

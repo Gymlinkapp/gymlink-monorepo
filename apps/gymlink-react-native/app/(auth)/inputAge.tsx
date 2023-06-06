@@ -1,9 +1,12 @@
 import { doc, setDoc } from 'firebase/firestore';
 import { useRef, useState } from 'react';
-import { Button, Text, TextInput, View } from 'react-native';
+import { Button, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { db } from '../../firebase';
-import { useRouter } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import { useAuth } from '../../context/auth';
+import OnboardLayout from '../../components/Layouts/OnboardLayout';
+import HeaderBackButton from '../../components/ui/HeaderBackButton';
+import OnboardHeader from '../../components/ui/OnboardHeader';
 
 const BirthDateInput = ({
   onChange,
@@ -107,55 +110,67 @@ export default function InputBirthDate() {
   };
 
   return (
-    <View className='justify-center flex-1 bg-dark-500'>
-      <View className='flex-row items-center justify-between gap-2'>
-        <View className='flex-1 mx-2'>
-          <Text className='text-white'>Day</Text>
-          <TextInput
-            className='bg-dark-400 rounded-md p-4 text-white'
-            keyboardType='numeric'
-            maxLength={2}
-            onChangeText={onDayChange}
-            placeholder='DD'
-            autoComplete='birthdate-day'
-            returnKeyType='next'
-          />
+    <OnboardLayout>
+      <Stack.Screen
+        options={{
+          title: 'Your birthday',
+          headerLeft: () => (
+            <HeaderBackButton router={() => router.back} text='Back' />
+          ),
+        }}
+      />
+      <OnboardHeader
+        title="When's your birthday?"
+        subtitle='Dont lie weirdo.'
+      />
+      <View>
+        <View className='flex-row items-center justify-between gap-2'>
+          <View className='flex-1 mx-2'>
+            <Text className='text-white'>Day</Text>
+            <TextInput
+              className='bg-dark-400 rounded-md p-4 text-white'
+              keyboardType='numeric'
+              maxLength={2}
+              onChangeText={onDayChange}
+              placeholder='DD'
+              autoComplete='birthdate-day'
+              returnKeyType='next'
+            />
+          </View>
+          <View className='flex-1 mx-2'>
+            <Text className='text-white'>Month</Text>
+            <TextInput
+              ref={monthRef}
+              className='bg-dark-400 rounded-md p-4 text-white'
+              keyboardType='numeric'
+              maxLength={2}
+              onChangeText={onMonthChange}
+              autoComplete='birthdate-month'
+              placeholder='MM'
+              returnKeyType='next'
+            />
+          </View>
+          <View className='flex-1 mx-2'>
+            <Text className='text-white'>Year</Text>
+            <TextInput
+              ref={yearRef}
+              className='bg-dark-400 rounded-md p-4 text-white'
+              keyboardType='numeric'
+              maxLength={4}
+              onChangeText={onYearChange}
+              autoComplete='birthdate-year'
+              placeholder='YYYY'
+              returnKeyType='next'
+            />
+          </View>
         </View>
-        {/* <BirthDateInput
-          label='Day'
-          maxLength={2}
-          onChange={onDayChange}
-          placeholder='DD'
-        /> */}
-        <View className='flex-1 mx-2'>
-          <Text className='text-white'>Month</Text>
-          <TextInput
-            ref={monthRef}
-            className='bg-dark-400 rounded-md p-4 text-white'
-            keyboardType='numeric'
-            maxLength={2}
-            onChangeText={onMonthChange}
-            autoComplete='birthdate-month'
-            placeholder='MM'
-            returnKeyType='next'
-          />
-        </View>
-        <View className='flex-1 mx-2'>
-          <Text className='text-white'>Year</Text>
-          <TextInput
-            ref={yearRef}
-            className='bg-dark-400 rounded-md p-4 text-white'
-            keyboardType='numeric'
-            maxLength={4}
-            onChangeText={onYearChange}
-            autoComplete='birthdate-year'
-            placeholder='YYYY'
-            returnKeyType='next'
-          />
-        </View>
+        <TouchableOpacity
+          className='bg-light-500 w-full py-6 rounded-md items-center mt-32'
+          onPress={chooseAge}
+        >
+          <Text className='text-dark-500 font-akira-expanded'>Continue</Text>
+        </TouchableOpacity>
       </View>
-
-      <Button title='Done' onPress={chooseAge} />
-    </View>
+    </OnboardLayout>
   );
 }

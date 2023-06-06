@@ -10,7 +10,7 @@ import {
   View,
 } from 'react-native';
 import { db } from '../../firebase';
-import { useRouter } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import { useAuth } from '../../context/auth';
 import * as ImagePicker from 'expo-image-picker';
 import {
@@ -21,6 +21,8 @@ import {
 } from 'firebase/storage';
 import { Plus } from 'phosphor-react-native';
 import { styled } from 'nativewind';
+import HeaderBackButton from '../../components/ui/HeaderBackButton';
+import OnboardHeader from '../../components/ui/OnboardHeader';
 
 const StyledPlus = styled(Plus);
 
@@ -104,34 +106,53 @@ export default function InputPicture() {
 
   console.log(image);
   return (
-    <SafeAreaView className='items-center flex-col justify-between flex-1 bg-dark-500'>
-      <TouchableOpacity
-        onPress={pickImage}
-        className='bg-dark-300 py-6 px-12 items-center flex-row rounded-md'
-      >
-        <StyledPlus
-          size={24}
-          weight='bold'
-          color='#fff'
-          className='text-white'
+    <SafeAreaView className='bg-dark-500 h-full'>
+      <Stack.Screen
+        options={{
+          title: 'Choose Image',
+          headerLeft: () => (
+            <HeaderBackButton router={() => router.back} text='Back' />
+          ),
+        }}
+      />
+      <View className='p-6 flex-1 justify-between'>
+        <OnboardHeader
+          title='How ppl see you'
+          subtitle='Show the progress, the best of the best lighting?'
         />
-        <Text className='text-white font-bold'>Pick Image</Text>
-      </TouchableOpacity>
-      {image && (
-        <Image
-          source={{ uri: image }}
-          style={{ width: 300, height: 400 }}
-          className='rounded-2xl'
-        />
-      )}
-      {image && (
-        <TouchableOpacity
-          onPress={saveImageToUser}
-          className='bg-dark-300 py-6 items-center rounded-md w-full'
-        >
-          <Text className='text-white font-bold'>Connect to your main gym</Text>
-        </TouchableOpacity>
-      )}
+        <View className='items-center flex-col justify-between'>
+          {image && (
+            <Image
+              source={{ uri: image }}
+              style={{ width: 300, height: 400 }}
+              className='rounded-2xl'
+            />
+          )}
+          {image && (
+            <TouchableOpacity
+              className='bg-light-500 w-full py-6 rounded-md items-center mt-32'
+              onPress={saveImageToUser}
+            >
+              <Text className='text-dark-500 font-akira-expanded'>
+                Looks good, Continue
+              </Text>
+            </TouchableOpacity>
+          )}
+        </View>
+
+        {!image && (
+          <View>
+            <TouchableOpacity
+              className='bg-light-500 w-full py-6 rounded-md items-center mt-32'
+              onPress={pickImage}
+            >
+              <Text className='text-dark-500 font-akira-expanded'>
+                Pick an Image
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </View>
     </SafeAreaView>
   );
 }

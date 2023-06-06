@@ -9,10 +9,12 @@ import {
   View,
 } from 'react-native';
 import { db } from '../../firebase';
-import { useRouter } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import { useAuth } from '../../context/auth';
 import axios from 'axios';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import HeaderBackButton from '../../components/ui/HeaderBackButton';
+import OnboardHeader from '../../components/ui/OnboardHeader';
 
 type Gym = {
   description: string;
@@ -73,10 +75,22 @@ export default function InputGym() {
     }
   };
   return (
-    <SafeAreaView className='flex-1 justify-between bg-dark-500'>
+    <SafeAreaView className='flex-1 justify-between bg-dark-500 px-6'>
+      <Stack.Screen
+        options={{
+          title: 'Your gender',
+          headerLeft: () => (
+            <HeaderBackButton router={() => router.back} text='Back' />
+          ),
+        }}
+      />
       <View>
+        <OnboardHeader
+          title='Tap into your gym.'
+          subtitle='Tap in with your gym community, see what everyone is doing and get big together.'
+        />
         <TextInput
-          className='bg-dark-400 px-2 py-6 rounded-md text-white'
+          className='bg-dark-400 px-2 py-4 rounded-md text-white'
           placeholder='Power House, Dallas, Texas'
           onChangeText={(value) => {
             setInput(value);
@@ -90,13 +104,13 @@ export default function InputGym() {
               data={gyms}
               renderItem={({ item }) => (
                 <TouchableOpacity
-                  className='px-2 py-6'
+                  className='px-2 py-6 bg-dark-400 my-2 rounded-md'
                   onPress={() => {
                     setGym(item);
                     setGyms([]);
                   }}
                 >
-                  <Text className='text-white font-MontserratMedium'>
+                  <Text className='text-light-400 text-sm font-bold'>
                     {item.description}
                   </Text>
                 </TouchableOpacity>
@@ -107,10 +121,12 @@ export default function InputGym() {
       </View>
       {gym && (
         <TouchableOpacity
-          className='bg-white rounded-xl w-full py-6 items-center'
+          className='bg-light-500 w-full py-6 rounded-md items-center mt-12'
           onPress={connectGymToUser}
         >
-          <Text className='font-bold text-dark-500'>Find your gym bro</Text>
+          <Text className='text-dark-500 font-akira-expanded'>
+            Find your gym bro
+          </Text>
         </TouchableOpacity>
       )}
     </SafeAreaView>
