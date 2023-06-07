@@ -26,7 +26,10 @@ export default function Root() {
       <Tabs
         screenOptions={{
           tabBarStyle: {
-            borderWidth: 0,
+            backgroundColor: '#070707',
+          },
+          headerStyle: {
+            backgroundColor: '#070707',
           },
           tabBarShowLabel: false,
           headerShown: false,
@@ -54,6 +57,12 @@ export default function Root() {
                 weight={focused ? 'fill' : 'bold'}
               />
             ),
+          }}
+        />
+        <Tabs.Screen
+          name='chats/[chat]'
+          options={{
+            href: null,
           }}
         />
         <Tabs.Screen

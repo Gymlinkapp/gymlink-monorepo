@@ -6,15 +6,17 @@ import {
   Dimensions,
   KeyboardAvoidingView,
   Platform,
+  TouchableOpacity,
 } from 'react-native';
 import { MotiView } from 'moti';
 import { User } from '../../types/user';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MapPin, PaperPlaneRight } from 'phosphor-react-native';
 import { TextInput } from 'react-native-gesture-handler';
-import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { useAuth } from '../../context/auth';
+import { useRouter } from 'expo-router';
 
 interface UserCardProps {
   user: User;
@@ -23,20 +25,69 @@ interface UserCardProps {
 export const UserCard: React.FC<UserCardProps> = ({ user }) => {
   const [message, setMessage] = React.useState('');
   const { user: currUser } = useAuth();
+  const router = useRouter();
   const createChat = async () => {
     if (!currUser) return;
     const chatRef = doc(db, 'chats', `${user.uid}-${currUser.uid}`);
 
-    await setDoc(chatRef, {
-      users: [user.uid, currUser.uid],
-      messages: [
-        {
-          sender: currUser.uid,
-          createdAt: serverTimestamp(),
-          content: message,
-        },
-      ],
-    });
+    try {
+      const chat = await setDoc(chatRef, {
+        uid: chatRef.id,
+        users: [user.uid, currUser.uid],
+        messages: [
+          {
+            sender: currUser.uid,
+            createdAt: new Date(),
+            content: message,
+          },
+        ],
+      });
+
+      // Get current user's document and add the chat ID to their 'chats' field.
+      const currentUser = doc(db, 'users', currUser.uid);
+      const userSnap = await getDoc(currentUser);
+      let userChats = (userSnap.data() as User).chats || []; // get current chats or initialize with empty array if null
+      if (!chatRef.id) {
+        throw new Error('Chat ID not found');
+      }
+
+      const chatRefId = chatRef.id as never;
+
+      // if there is already a chat with this user, don't add it again
+      if (userChats.includes(chatRefId)) {
+        router.push('/chats');
+        return;
+      }
+      userChats.push(chatRefId);
+
+      await updateDoc(currentUser, {
+        chats: userChats,
+      });
+
+      // Get other user's document and add the chat ID to their 'chats' field.
+      const otherUser = doc(db, 'users', user.uid);
+      const otherUserSnap = await getDoc(otherUser);
+      let otherUserChats = (otherUserSnap.data() as User).chats || []; // get current chats or initialize with empty array if null
+      if (!chatRef.id) {
+        throw new Error('Chat ID not found');
+      }
+
+      // if there is already a chat with this user, don't add it again
+      if (otherUserChats.includes(chatRefId)) {
+        router.push('/chats');
+        return;
+      }
+
+      otherUserChats.push(chatRefId);
+
+      await updateDoc(otherUser, {
+        chats: otherUserChats,
+      });
+
+      router.push('/chats');
+    } catch (error) {
+      console.log('Error creating chat:', error);
+    }
   };
   return (
     <KeyboardAvoidingView
@@ -125,14 +176,16 @@ export const UserCard: React.FC<UserCardProps> = ({ user }) => {
             placeholderTextColor='white'
             className='bg-dark-400 p-4 flex-1 rounded-md text-light-400'
           />
-          <PaperPlaneRight
-            size={24}
-            color='white'
-            weight='fill'
-            style={{
-              paddingHorizontal: 32,
-            }}
-          />
+          <TouchableOpacity onPress={createChat}>
+            <PaperPlaneRight
+              size={24}
+              color='white'
+              weight='fill'
+              style={{
+                paddingHorizontal: 32,
+              }}
+            />
+          </TouchableOpacity>
         </View>
       </MotiView>
     </KeyboardAvoidingView>

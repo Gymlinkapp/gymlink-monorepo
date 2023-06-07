@@ -6,6 +6,7 @@ export type User = {
   image: string;
   uid: string;
   age: number;
+  chats: [];
   gym: {
     place_id: string;
     description: string;

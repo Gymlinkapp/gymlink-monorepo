@@ -115,18 +115,21 @@ export default function Home() {
     <View className='flex-1 bg-dark-500'>
       <Tabs.Screen
         options={{
+          headerStyle: {
+            backgroundColor: '#070707',
+            shadowColor: '#070707',
+            borderBottomColor: '#070707',
+          },
           tabBarStyle: {
             backgroundColor: '#070707',
+            borderTopColor: '#070707',
           },
           tabBarIcon: ({ focused }) => (
             <House size={24} color='#fff' weight={focused ? 'fill' : 'bold'} />
           ),
           headerTitle: '',
           headerShown: true,
-          headerStyle: {
-            borderBottomWidth: 0,
-            backgroundColor: '#070707',
-          },
+
           headerLeft: () => (
             <Text className='font-akira-expanded text-light-500'>Gymlink</Text>
           ),

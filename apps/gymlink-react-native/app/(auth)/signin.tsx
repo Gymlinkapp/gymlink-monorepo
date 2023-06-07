@@ -22,7 +22,7 @@ export default function Signin() {
 
   const signIn = async () => {
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const user = await signInWithEmailAndPassword(auth, email, password);
     } catch (error) {
       console.log('Error during sign in:', error);
     }
