@@ -5,6 +5,7 @@ export type User = {
   authStep: string;
   image: string;
   uid: string;
+  age: number;
   gym: {
     place_id: string;
     description: string;

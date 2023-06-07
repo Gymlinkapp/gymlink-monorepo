@@ -9,6 +9,7 @@ import {
 import {
   SplashScreen,
   Stack,
+  Tabs,
   useRootNavigationState,
   useRouter,
   useSegments,
@@ -19,7 +20,7 @@ import { auth, db } from '../firebase';
 import { collection, doc, getDoc, where } from 'firebase/firestore';
 import { query } from 'firebase/database';
 import { User } from '../types/user';
-import { SignOut } from 'phosphor-react-native';
+import { House, Plus, SignOut } from 'phosphor-react-native';
 import { SwipeableUserCard } from '../components/ui/SwipableUserCard';
 
 export default function Home() {
@@ -112,10 +113,18 @@ export default function Home() {
 
   return (
     <View className='flex-1 bg-dark-500'>
-      <Stack.Screen
+      <Tabs.Screen
         options={{
+          tabBarStyle: {
+            backgroundColor: '#070707',
+          },
+          tabBarIcon: ({ focused }) => (
+            <House size={24} color='#fff' weight={focused ? 'fill' : 'bold'} />
+          ),
+          headerTitle: '',
           headerShown: true,
           headerStyle: {
+            borderBottomWidth: 0,
             backgroundColor: '#070707',
           },
           headerLeft: () => (
@@ -133,6 +142,11 @@ export default function Home() {
           ),
         }}
       />
+      <View className='w-full h-12 flex-row justify-end px-4 items-center'>
+        <View className='h-10 w-10 rounded-full items-center justify-center bg-light-500'>
+          <Plus size={18} color='#000' weight='bold' />
+        </View>
+      </View>
       <View style={styles.container}>
         {users.slice(index, index + 3).map((user, i) => (
           <SwipeableUserCard

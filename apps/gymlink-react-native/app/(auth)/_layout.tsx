@@ -5,6 +5,7 @@ import {
 
   // This example uses a basic Layout component, but you can use any Layout.
   Slot,
+  Tabs,
 } from 'expo-router';
 import { useFonts } from 'expo-font';
 
