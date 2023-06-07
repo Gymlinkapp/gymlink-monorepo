@@ -1,6 +1,6 @@
 import { SplashScreen, Tabs, useRouter } from 'expo-router';
 import { ChatCircle, House, SignOut } from 'phosphor-react-native';
-import { Text, TouchableOpacity } from 'react-native';
+import { Image, Text, TouchableOpacity } from 'react-native';
 import { auth, db } from '../../firebase';
 import { View } from 'moti';
 import { useEffect, useState } from 'react';
@@ -9,6 +9,7 @@ import { useAuth } from '../../context/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { FlatList } from 'react-native-gesture-handler';
 import { Chat } from '../../types/chat';
+import Loading from '../../components/ui/Loading';
 
 const ChatItem = ({ item }: { item: Chat }) => {
   const { user } = useAuth();
@@ -45,8 +46,11 @@ const ChatItem = ({ item }: { item: Chat }) => {
   }, [item]);
 
   if (loading || !users) {
-    return <Text>...loading</Text>; // Or some custom loading UI
+    return <Loading />; // Or some custom loading UI
   }
+
+  const otherUser = users.find((u) => u.uid !== user?.uid);
+  const lastMessage = item.messages[item.messages.length - 1];
 
   return (
     <TouchableOpacity
@@ -55,7 +59,6 @@ const ChatItem = ({ item }: { item: Chat }) => {
           return;
         }
 
-        const otherUser = users.find((u) => u.uid !== user.uid);
         const slug = users.map((u) => u.name).join('-');
         router.push({
           pathname: `/chats/${slug}`,
@@ -67,8 +70,17 @@ const ChatItem = ({ item }: { item: Chat }) => {
         });
       }}
     >
-      <Text className='text-white'>{users[0]?.name}</Text>
-      <Text className='text-white'>{item?.messages[0].content}</Text>
+      <View className='flex-row items-center bg-dark-400 p-6 rounded-lg'>
+        <View className='w-12 h-12 overflow-hidden rounded-full'>
+          <Image source={{ uri: otherUser?.image }} className='h-full w-full' />
+        </View>
+        <View className='ml-4'>
+          <Text className='text-white font-akira-expanded text-lg'>
+            {otherUser?.name}
+          </Text>
+          <Text className='text-light-400'>{lastMessage.content}</Text>
+        </View>
+      </View>
     </TouchableOpacity>
   );
 };
