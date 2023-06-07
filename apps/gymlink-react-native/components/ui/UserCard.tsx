@@ -12,12 +12,32 @@ import { User } from '../../types/user';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MapPin, PaperPlaneRight } from 'phosphor-react-native';
 import { TextInput } from 'react-native-gesture-handler';
+import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { db } from '../../firebase';
+import { useAuth } from '../../context/auth';
 
 interface UserCardProps {
   user: User;
 }
 
 export const UserCard: React.FC<UserCardProps> = ({ user }) => {
+  const [message, setMessage] = React.useState('');
+  const { user: currUser } = useAuth();
+  const createChat = async () => {
+    if (!currUser) return;
+    const chatRef = doc(db, 'chats', `${user.uid}-${currUser.uid}`);
+
+    await setDoc(chatRef, {
+      users: [user.uid, currUser.uid],
+      messages: [
+        {
+          sender: currUser.uid,
+          createdAt: serverTimestamp(),
+          content: message,
+        },
+      ],
+    });
+  };
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -99,7 +119,9 @@ export const UserCard: React.FC<UserCardProps> = ({ user }) => {
         {/* start a chat */}
         <View className='w-full flex-row items-center z-20 mt-4'>
           <TextInput
-            placeholder='Write a message'
+            placeholder={`Lift with ${user.name}, get big 💪`}
+            value={message}
+            onChangeText={setMessage}
             placeholderTextColor='white'
             className='bg-dark-400 p-4 flex-1 rounded-md text-light-400'
           />
