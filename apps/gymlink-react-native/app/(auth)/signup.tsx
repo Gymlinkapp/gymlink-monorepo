@@ -32,6 +32,7 @@ export default function Signup() {
       await setDoc(doc(db, 'users', uid), {
         email: email,
         authStep: 'name',
+        uid: uid,
       });
 
       router.push('/inputName');

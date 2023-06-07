@@ -3,6 +3,8 @@ export type User = {
   email: string;
   name: string;
   authStep: string;
+  image: string;
+  uid: string;
   gym: {
     place_id: string;
     description: string;

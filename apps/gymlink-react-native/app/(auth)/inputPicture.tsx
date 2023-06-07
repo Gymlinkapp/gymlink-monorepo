@@ -59,7 +59,7 @@ export default function InputPicture() {
     try {
       const response = await fetch(uri);
       const blob = await response.blob();
-      const storageRef = ref(storage, 'users/');
+      const storageRef = ref(storage, `users/${authUser?.uid}/profile.jpg`);
 
       const uploadTask = uploadBytesResumable(storageRef, blob);
 
