@@ -1,6 +1,7 @@
 import {
-  Button,
-  Image,
+  Animated,
+  Modal,
+  Dimensions,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -20,12 +21,35 @@ import { auth, db } from '../firebase';
 import { collection, doc, getDoc, where } from 'firebase/firestore';
 import { query } from 'firebase/database';
 import { User } from '../types/user';
-import { House, Plus, SignOut } from 'phosphor-react-native';
+import { House, Plus, SignOut, X } from 'phosphor-react-native';
 import { SwipeableUserCard } from '../components/ui/SwipableUserCard';
+
+const { height } = Dimensions.get('window');
 
 export default function Home() {
   const [index, setIndex] = useState(0);
   const [swipedUsers, setSwipedUsers] = useState<User[]>([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const translateY = new Animated.Value(height);
+
+  const openModal = () => {
+    setIsModalVisible(true);
+    Animated.timing(translateY, {
+      toValue: 0,
+      duration: 250,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const closeModal = () => {
+    Animated.timing(translateY, {
+      toValue: height,
+      duration: 250,
+      useNativeDriver: true,
+    }).start(() => {
+      setIsModalVisible(false);
+    });
+  };
 
   const segments = useSegments();
   const router = useRouter();
@@ -68,12 +92,6 @@ export default function Home() {
 
     fetchUsers();
   }, []); // dependency array is empty so this effect runs once on mount
-
-  console.log(
-    'u',
-    users.map((u) => u.name)
-  );
-  console.log('me', user?.name);
 
   // Handle unauthenticated users
   useEffect(() => {
@@ -146,10 +164,38 @@ export default function Home() {
         }}
       />
       <View className='w-full h-12 flex-row justify-end px-4 items-center'>
-        <View className='h-10 w-10 rounded-full items-center justify-center bg-light-500'>
+        <TouchableOpacity
+          onPress={openModal}
+          className='h-10 w-10 rounded-full items-center justify-center bg-light-500'
+        >
           <Plus size={18} color='#000' weight='bold' />
-        </View>
+        </TouchableOpacity>
       </View>
+      <Modal
+        visible={isModalVisible}
+        animationType='slide'
+        transparent={true}
+        onRequestClose={() => setIsModalVisible(false)}
+      >
+        <View className='flex-1 justify-end items-end w-full'>
+          <View className='bg-dark-500 border-1 border-dark-400 w-full h-1/2 p-12 rounded-3xl'>
+            <View className='m-2 flex-row items-center w-full justify-between'>
+              <Text className='text-white text-md font-akira-expanded'>
+                Your gym plans
+              </Text>
+              <TouchableOpacity
+                onPress={() => {
+                  setIsModalVisible(false);
+                }}
+              >
+                <X color='#fff' />
+              </TouchableOpacity>
+            </View>
+            <View className='flex-row flex-wrap flex-1'></View>
+            <View className='flex-row w-full'></View>
+          </View>
+        </View>
+      </Modal>
       <View style={styles.container}>
         {users.slice(index, index + 3).map((user, i) => (
           <SwipeableUserCard
