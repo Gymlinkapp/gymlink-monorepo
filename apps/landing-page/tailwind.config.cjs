@@ -6,6 +6,11 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
+        'akira-expanded': [
+          'Akira Expanded',
+          'Manrope',
+          ...defaultTheme.fontFamily.sans,
+        ],
         sans: ['Manrope', 'manrope', ...defaultTheme.fontFamily.sans],
       },
       colors: {
