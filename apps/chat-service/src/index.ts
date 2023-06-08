@@ -16,14 +16,11 @@ interface JoinChatData {
 }
 
 interface ChatMessageData {
-  createdAt: Date;
+  // createdAt: Date;
   roomName: string;
   roomId: string;
-  sender: {
-    id: string;
-    firstName: string;
-    lastName: string;
-  };
+  sender: string;
+  createdAt: string;
   content: string;
 }
 
