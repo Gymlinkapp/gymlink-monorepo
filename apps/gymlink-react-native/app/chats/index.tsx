@@ -115,7 +115,7 @@ export default function Chats() {
   }, []); // dependency array is empty so this effect runs once on mount
 
   useEffect(() => {
-    if (chatIds.length > 0) {
+    if (chatIds?.length > 0) {
       getAllChats();
     }
   }, [chatIds]);

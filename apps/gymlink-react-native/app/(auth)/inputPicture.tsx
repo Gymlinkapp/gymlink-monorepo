@@ -124,7 +124,7 @@ export default function InputPicture() {
           {image && (
             <Image
               source={{ uri: image }}
-              style={{ width: 300, height: 400 }}
+              style={{ width: 300, height: 325 }}
               className='rounded-2xl'
             />
           )}

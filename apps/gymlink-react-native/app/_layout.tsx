@@ -36,7 +36,7 @@ export default function Root() {
         }}
       >
         <Tabs.Screen
-          name='home'
+          name='index'
           options={{
             tabBarIcon: ({ focused }) => (
               <House

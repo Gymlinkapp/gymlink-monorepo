@@ -183,6 +183,7 @@ export default function ChatPage() {
           tabBarStyle: {
             display: 'none',
           },
+          headerShown: false,
         }}
       />
       <View className='py-16 px-4'>
