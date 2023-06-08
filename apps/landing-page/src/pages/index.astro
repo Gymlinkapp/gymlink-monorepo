@@ -3,6 +3,13 @@ import Layout from "../layouts/Layout.astro";
 import Button from "../components/Button.astro";
 ---
 
+<style is:global>
+  @font-face {
+  font-family: 'Akira Expanded';
+  src: url('/fonts/Akira-Expanded.otf') format('otf');
+}
+</style>
+
 <Layout title="Gymlink - Link up with like-minded fitness enthusiasts.">
   <main class="bg-dark-500 min-h-screen relative bg-cover bg-center pt-48 text-white mx-auto text-center font-manrope">
     <section class="relative min-h-[50vh] md:min-h-[45vh] max-w-4xl mx-auto z-10 px-12">
