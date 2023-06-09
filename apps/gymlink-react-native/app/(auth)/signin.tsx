@@ -23,6 +23,10 @@ export default function Signin() {
   const signIn = async () => {
     try {
       const user = await signInWithEmailAndPassword(auth, email, password);
+
+      if (user) {
+        router.push('/');
+      }
     } catch (error) {
       console.log('Error during sign in:', error);
     }

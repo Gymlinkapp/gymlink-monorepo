@@ -11,4 +11,9 @@ export type User = {
     place_id: string;
     description: string;
   };
+  gymPlans?: {
+    movements: [];
+    isGoingToday: boolean;
+    date: string;
+  }[];
 };

@@ -23,12 +23,15 @@ import { query } from 'firebase/database';
 import { User } from '../types/user';
 import { House, Plus, SignOut, X } from 'phosphor-react-native';
 import { SwipeableUserCard } from '../components/ui/SwipableUserCard';
+import GymPlanModal from '../components/ui/GymPlanModal';
+import Loading from '../components/ui/Loading';
 
 const { height } = Dimensions.get('window');
 
 export default function Home() {
   const [index, setIndex] = useState(0);
   const [swipedUsers, setSwipedUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const translateY = new Animated.Value(height);
 
@@ -60,6 +63,8 @@ export default function Home() {
 
   useEffect(() => {
     const fetchUsers = async () => {
+      setLoading(true);
+
       if (!authUser) {
         return <SplashScreen />;
       }
@@ -84,6 +89,7 @@ export default function Home() {
               .filter((u) => u !== undefined)
               .filter((u) => u.uid !== user?.uid)
           ); // store the users in state
+          setLoading(false);
         }
       } catch (error) {
         console.log(error);
@@ -129,6 +135,8 @@ export default function Home() {
 
   // router.replace('/inputPicture');
 
+  if (loading) return <Loading />;
+
   return (
     <View className='flex-1 bg-dark-500'>
       <Tabs.Screen
@@ -171,31 +179,10 @@ export default function Home() {
           <Plus size={18} color='#000' weight='bold' />
         </TouchableOpacity>
       </View>
-      <Modal
-        visible={isModalVisible}
-        animationType='slide'
-        transparent={true}
-        onRequestClose={() => setIsModalVisible(false)}
-      >
-        <View className='flex-1 justify-end items-end w-full'>
-          <View className='bg-dark-500 border-1 border-dark-400 w-full h-1/2 p-12 rounded-3xl'>
-            <View className='m-2 flex-row items-center w-full justify-between'>
-              <Text className='text-white text-md font-akira-expanded'>
-                Your gym plans
-              </Text>
-              <TouchableOpacity
-                onPress={() => {
-                  setIsModalVisible(false);
-                }}
-              >
-                <X color='#fff' />
-              </TouchableOpacity>
-            </View>
-            <View className='flex-row flex-wrap flex-1'></View>
-            <View className='flex-row w-full'></View>
-          </View>
-        </View>
-      </Modal>
+      <GymPlanModal
+        isModalVisible={isModalVisible}
+        setIsModalVisible={setIsModalVisible}
+      />
       <View style={styles.container}>
         {users.slice(index, index + 3).map((user, i) => (
           <SwipeableUserCard

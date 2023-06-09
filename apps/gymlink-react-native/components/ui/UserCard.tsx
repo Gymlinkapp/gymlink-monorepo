@@ -17,6 +17,7 @@ import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { useAuth } from '../../context/auth';
 import { useRouter } from 'expo-router';
+import Loading from './Loading';
 
 interface UserCardProps {
   user: User;
@@ -26,6 +27,7 @@ export const UserCard: React.FC<UserCardProps> = ({ user }) => {
   const [message, setMessage] = React.useState('');
   const { user: currUser } = useAuth();
   const router = useRouter();
+
   const createChat = async () => {
     if (!currUser) return;
     const chatRef = doc(db, 'chats', `${user.uid}-${currUser.uid}`);
@@ -89,6 +91,36 @@ export const UserCard: React.FC<UserCardProps> = ({ user }) => {
       console.log('Error creating chat:', error);
     }
   };
+  if (!currUser) return <Loading />;
+
+  const findUsersPlansToday = (
+    plans: User['gymPlans']
+  ): {
+    movements: {
+      label: string;
+    }[];
+    isGoingToday: boolean;
+    date: string;
+  } | null => {
+    if (!plans) return null;
+
+    const todayPlan = plans.find((plan) => {
+      const today = new Date();
+      const planDate = new Date(plan.date);
+      return (
+        today.getUTCFullYear() === planDate.getUTCFullYear() &&
+        today.getUTCMonth() === planDate.getUTCMonth() &&
+        today.getUTCDate() === planDate.getUTCDate()
+      );
+    });
+
+    return todayPlan || null;
+  };
+
+  console.log('users plans', findUsersPlansToday(currUser.gymPlans));
+
+  let todayPlan = findUsersPlansToday(currUser.gymPlans);
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -152,19 +184,19 @@ export const UserCard: React.FC<UserCardProps> = ({ user }) => {
             </View>
 
             {/* their gym plans */}
-            <View className='pt-4'>
-              <View className='rounded-full w-1/2 px-4 py-2 bg-dark-300'>
-                <Text className='text-white text-xs'>Going today @ 2:30PM</Text>
+            {/* if a user has gym plans today [{date: string}] */}
+            {todayPlan && (
+              <View className='flex-row items-center'>
+                {currUser.gymPlans &&
+                  todayPlan.movements.map((movement) => (
+                    <View className='rounded-full px-4 py-2 bg-light-500 mt-2 mx-1'>
+                      <Text className='text-dark-500 text-xs'>
+                        {movement.label}
+                      </Text>
+                    </View>
+                  ))}
               </View>
-
-              <View className='flex flex-row flex-wrap'>
-                {['Chest', 'Triceps', 'Shoulders'].map((i) => (
-                  <View className='rounded-full px-4 py-2 bg-light-500 mt-2 mx-1'>
-                    <Text className='text-dark-500 text-xs'>{i}</Text>
-                  </View>
-                ))}
-              </View>
-            </View>
+            )}
           </View>
         </View>
         {/* start a chat */}
