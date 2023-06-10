@@ -2,8 +2,9 @@
   "expo": {
     "name": "Gymlink",
     "slug": "gymlink",
-    "version": "1.1.1",
+    "version": "1.2.0",
     "orientation": "portrait",
+    "scheme": "gymlink",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
     "splash": {
@@ -18,7 +19,7 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "buildNumber": "50",
+      "buildNumber": "52",
       "bundleIdentifier": "com.devdylan.gymlink-app",
       "infoPlist": ""
     },
