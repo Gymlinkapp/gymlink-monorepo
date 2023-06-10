@@ -1,8 +1,8 @@
 import { Check, X } from 'phosphor-react-native';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FlatList, Modal, Text, TouchableOpacity, View } from 'react-native';
 import { useAuth } from '../../context/auth';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, onSnapshot, setDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
 
 type GymPlanModalProps = {
@@ -23,39 +23,32 @@ export default function GymPlanModal({
   //   const [isGoingToday, setIsGoingToday] = useState(false);
 
   const { user } = useAuth();
+  const [gymPlans, setGymPlans] = useState(null);
 
   const [items, setItems] = useState<Movement[]>([
-    { label: 'Bench Press', value: 'bench-press', selected: false },
-    { label: 'Squat', value: 'squat', selected: false },
-    { label: 'Deadlift', value: 'deadlift', selected: false },
-    { label: 'Overhead Press', value: 'overhead-press', selected: false },
-    { label: 'Pull Ups', value: 'pull-ups', selected: false },
-    { label: 'Dips', value: 'dips', selected: false },
-    { label: 'Barbell Row', value: 'barbell-row', selected: false },
-    { label: 'Barbell Curl', value: 'barbell-curl', selected: false },
-    {
-      label: 'Barbell Tricep Extension',
-      value: 'barbell-tricep-extension',
-      selected: false,
-    },
-    { label: 'Cardio', value: 'cardio', selected: false },
-    { label: 'Leg Press', value: 'leg-press', selected: false },
-    { label: 'Leg Extension', value: 'leg-extension', selected: false },
-    { label: 'Leg Curl', value: 'leg-curl', selected: false },
-    { label: 'Calf Raises', value: 'calf-raises', selected: false },
-
-    {
-      label: 'Dumbell Bicep Curls',
-      value: 'dumbell-bicep-curls',
-      selected: false,
-    },
-    { label: 'Lateral Raises', value: 'lateral-raises', selected: false },
-    {
-      label: 'Dumbell Chest Press',
-      value: 'dumbell-chest-press',
-      selected: false,
-    },
+    { label: 'Chest', value: 'chest', selected: false },
+    { label: 'Back', value: 'back', selected: false },
+    { label: 'Shoulders', value: 'shoulders', selected: false },
+    { label: 'Biceps', value: 'biceps', selected: false },
+    { label: 'Triceps', value: 'triceps', selected: false },
+    { label: 'Legs', value: 'legs', selected: false },
   ]);
+
+  useEffect(() => {
+    if (!user) return;
+    const userId = user.uid;
+
+    const unsubscribe = onSnapshot(doc(db, 'users', userId), (doc) => {
+      const data = doc.data();
+
+      if (!data) return;
+      setGymPlans(data.gymPlans);
+    });
+
+    // Remember to unsubscribe from your real-time listener when your component is unmounted
+    // or if the user logs out
+    return () => unsubscribe();
+  }, [user]); // re-run effect when 'user' changes
 
   const saveGymPlans = async () => {
     if (!user) return;
@@ -86,7 +79,7 @@ export default function GymPlanModal({
       onRequestClose={() => setIsModalVisible(false)}
     >
       <View className='flex-1 justify-end items-end w-full'>
-        <View className='bg-dark-500 border-1 border-dark-400 w-full h-3/4 p-12 rounded-3xl'>
+        <View className='bg-dark-500 border-1 border-dark-400 w-full h-1/2 p-12 rounded-3xl'>
           <View className='m-2 flex-row items-center w-full justify-between'>
             <Text className='text-white text-md font-akira-expanded'>
               Your gym plans
@@ -125,6 +118,7 @@ export default function GymPlanModal({
               data={items}
               renderItem={({ index, item }) => (
                 <TouchableOpacity
+                  key={index}
                   className={`rounded-full m-2 px-6 py-2 z-10 ${
                     item.selected ? 'bg-light-500' : 'bg-dark-400'
                   }`}

@@ -60,12 +60,6 @@ export default function Root() {
           }}
         />
         <Tabs.Screen
-          name='chats/[chat]'
-          options={{
-            href: null,
-          }}
-        />
-        <Tabs.Screen
           name='(auth)'
           options={{
             href: null,

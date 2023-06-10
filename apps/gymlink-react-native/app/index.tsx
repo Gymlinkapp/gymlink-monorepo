@@ -83,7 +83,6 @@ export default function Home() {
           const userSnaps = await Promise.all(userRefs.map(getDoc));
 
           const users = userSnaps.map((snap) => snap.data());
-          console.log('users', users);
           setUsers(
             users
               .filter((u) => u !== undefined)

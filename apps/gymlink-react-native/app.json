@@ -19,7 +19,7 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "buildNumber": "52",
+      "buildNumber": "54",
       "bundleIdentifier": "com.devdylan.gymlink-app",
       "infoPlist": ""
     },
