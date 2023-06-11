@@ -7,9 +7,6 @@ import {
   Slot,
   Tabs,
 } from 'expo-router';
-import { useFonts } from 'expo-font';
-
-import { AuthProvider } from '../../context/auth';
 
 export default function AuthRoot() {
   return (

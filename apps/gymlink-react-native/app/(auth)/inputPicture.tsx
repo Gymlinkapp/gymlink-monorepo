@@ -23,12 +23,13 @@ import { Plus } from 'phosphor-react-native';
 import { styled } from 'nativewind';
 import HeaderBackButton from '../../components/ui/HeaderBackButton';
 import OnboardHeader from '../../components/ui/OnboardHeader';
+import { useCurrentUser } from '../../hooks/useCurrentUser';
 
 const StyledPlus = styled(Plus);
 
 export default function InputPicture() {
   const [image, setImage] = useState('');
-  const { authUser } = useAuth();
+  const { user } = useCurrentUser();
   const router = useRouter();
 
   const storage = getStorage();
@@ -59,7 +60,7 @@ export default function InputPicture() {
     try {
       const response = await fetch(uri);
       const blob = await response.blob();
-      const storageRef = ref(storage, `users/${authUser?.uid}/profile.jpg`);
+      const storageRef = ref(storage, `users/${user?.uid}/profile.jpg`);
 
       const uploadTask = uploadBytesResumable(storageRef, blob);
 
@@ -85,12 +86,12 @@ export default function InputPicture() {
   };
 
   const saveImageToUser = async () => {
-    if (!authUser) {
+    if (!user) {
       return;
     }
     try {
       await setDoc(
-        doc(db, 'users', authUser.uid),
+        doc(db, 'users', user.uid),
         {
           image: image,
           authStep: 'gym',

@@ -10,9 +10,10 @@ import { doc, getDoc } from 'firebase/firestore';
 import { FlatList } from 'react-native-gesture-handler';
 import { Chat } from '../../../types/chat';
 import Loading from '../../../components/ui/Loading';
+import { useCurrentUser } from '../../../hooks/useCurrentUser';
 
 const ChatItem = ({ item }: { item: Chat }) => {
-  const { user } = useAuth();
+  const { user } = useCurrentUser();
   const [users, setUsers] = useState<User[] | []>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -70,7 +71,7 @@ const ChatItem = ({ item }: { item: Chat }) => {
         });
       }}
     >
-      <View className='flex-row items-center bg-dark-400 p-6 rounded-lg'>
+      <View className='flex-row items-center bg-dark-400 p-6 rounded-lg my-2'>
         <View className='w-12 h-12 overflow-hidden rounded-full'>
           <Image source={{ uri: otherUser?.image }} className='h-full w-full' />
         </View>
@@ -91,28 +92,29 @@ export default function Chats() {
   const [channelName, setChannelName] = useState('');
   const router = useRouter();
 
-  const { authUser, user } = useAuth();
+  const { user } = useCurrentUser();
 
   useEffect(() => {
     const fetchChats = async () => {
-      if (!authUser) {
-        return <SplashScreen />;
+      if (!user) {
+        return <Loading />;
       }
       try {
-        const userId = authUser.uid;
+        const userId = user.uid;
         const userRef = doc(db, 'users', userId);
         const userDoc = await getDoc(userRef);
 
         const userChats = (userDoc.data() as User).chats;
 
         setChatIds(userChats);
+        console.log(userChats);
       } catch (error) {
         console.log(error);
       }
     };
 
     fetchChats();
-  }, []); // dependency array is empty so this effect runs once on mount
+  }, [user]); // dependency array is empty so this effect runs once on mount
 
   useEffect(() => {
     if (chatIds?.length > 0) {

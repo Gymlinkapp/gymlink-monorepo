@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -14,15 +14,29 @@ import Button from '../../components/ui/Button';
 import OnboardHeader from '../../components/ui/OnboardHeader';
 import { CaretLeft } from 'phosphor-react-native';
 import HeaderBackButton from '../../components/ui/HeaderBackButton';
+import { useSignIn } from '../../hooks/useSignIn';
+import { useCurrentUser } from '../../hooks/useCurrentUser';
+import { useAuthNavigation } from '../../hooks/useAuthNavigation';
 
 export default function Signin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
 
-  const signIn = async () => {
+  const { user } = useCurrentUser();
+  useAuthNavigation(user);
+
+  useEffect(() => {
+    if (user) {
+      router.push('/(tabs)/home');
+    }
+  }, []);
+
+  const signIn = useSignIn();
+
+  const handleSignIn = async () => {
     try {
-      const user = await signInWithEmailAndPassword(auth, email, password);
+      const user = await signIn(email, password);
 
       if (user) {
         router.push('/(tabs)/home');
@@ -104,7 +118,7 @@ export default function Signin() {
           </View>
           <TouchableOpacity
             className='bg-light-500 w-full py-6 rounded-md items-center mt-12'
-            onPress={signIn}
+            onPress={handleSignIn}
           >
             <Text className='text-dark-500 font-akira-expanded'>Sign In</Text>
           </TouchableOpacity>

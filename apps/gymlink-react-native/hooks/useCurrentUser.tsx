@@ -1,5 +1,5 @@
 import { onAuthStateChanged } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, onSnapshot } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { User } from '../types/user';
 import { auth, db } from '../firebase';
@@ -10,26 +10,34 @@ export function useCurrentUser() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
+    const unsubscribeAuth = onAuthStateChanged(auth, (authUser) => {
       if (authUser) {
         const docRef = doc(db, 'users', authUser.uid);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          setUser(docSnap.data() as User);
-          setIsLoggedIn(true); // User is logged in if the user object exists
-        }
+
+        const unsubscribeSnapshot = onSnapshot(docRef, (docSnap) => {
+          if (docSnap.exists()) {
+            setUser(docSnap.data() as User);
+            setIsLoggedIn(true);
+          } else {
+            setUser(null);
+            setIsLoggedIn(false);
+          }
+
+          setLoading(false);
+        });
+
+        // Return cleanup function for snapshot listener
+        return () => unsubscribeSnapshot();
       } else {
         setUser(null);
-        setIsLoggedIn(false); // User is not logged in if there's no user object
+        setIsLoggedIn(false);
+        setLoading(false);
       }
-
-      setLoading(false);
     });
 
-    return unsubscribe;
+    // Return cleanup function for auth state change listener
+    return () => unsubscribeAuth();
   }, []);
-
-  console.log({ user, loading, isLoggedIn });
 
   return { user, loading, isLoggedIn };
 }

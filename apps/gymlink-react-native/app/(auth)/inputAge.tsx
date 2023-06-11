@@ -7,6 +7,7 @@ import { useAuth } from '../../context/auth';
 import OnboardLayout from '../../components/Layouts/OnboardLayout';
 import HeaderBackButton from '../../components/ui/HeaderBackButton';
 import OnboardHeader from '../../components/ui/OnboardHeader';
+import { useCurrentUser } from '../../hooks/useCurrentUser';
 
 const BirthDateInput = ({
   onChange,
@@ -42,7 +43,7 @@ export default function InputBirthDate() {
   const [month, setMonth] = useState('');
   const [year, setYear] = useState('');
   const router = useRouter();
-  const { authUser } = useAuth();
+  const { user } = useCurrentUser();
 
   const monthRef = useRef(null);
   const yearRef = useRef(null);
@@ -61,12 +62,12 @@ export default function InputBirthDate() {
   };
 
   const chooseAge = async () => {
-    if (!authUser) {
+    if (!user) {
       return;
     }
     try {
       await setDoc(
-        doc(db, 'users', authUser?.uid),
+        doc(db, 'users', user.uid),
         {
           age: calculateAge(),
           birthDate: new Date(

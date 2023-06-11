@@ -34,7 +34,7 @@ export default function Signup() {
         authStep: 'name',
         uid: uid,
       });
-      // router.push('/inputName');
+      router.push('/inputName');
     } catch (error) {
       console.log('Error during sign in:', error);
     }
