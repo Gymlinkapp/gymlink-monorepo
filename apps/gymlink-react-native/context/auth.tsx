@@ -14,6 +14,8 @@ interface AuthContextInterface {
   signOut: () => Promise<void>;
   authUser: AuthUser | null;
   user: User | null;
+  isLoggedIn: boolean;
+  loading: boolean;
 }
 
 const AuthContext = React.createContext<AuthContextInterface>({} as any);
@@ -29,6 +31,7 @@ export function AuthProvider(props: { children: React.ReactNode }) {
   const [user, setUser] = React.useState<null | User>(null);
   const [authUser, setAuthUser] = React.useState<null | AuthUser>(null);
   const [loading, setLoading] = React.useState(true);
+  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   const router = useRouter();
 
   // useProtectedRoute(user);
@@ -42,6 +45,8 @@ export function AuthProvider(props: { children: React.ReactNode }) {
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           setUser(docSnap.data() as User);
+
+          setIsLoggedIn(true);
         }
       } else {
         setUser(null);
@@ -94,8 +99,6 @@ export function AuthProvider(props: { children: React.ReactNode }) {
     return null;
   }
 
-  console.log(user);
-
   return (
     <AuthContext.Provider
       value={{
@@ -107,6 +110,8 @@ export function AuthProvider(props: { children: React.ReactNode }) {
         },
         authUser,
         user,
+        isLoggedIn,
+        loading,
       }}
     >
       {props.children}

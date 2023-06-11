@@ -25,7 +25,7 @@ export default function Signin() {
       const user = await signInWithEmailAndPassword(auth, email, password);
 
       if (user) {
-        router.push('/');
+        router.push('/(tabs)/home');
       }
     } catch (error) {
       console.log('Error during sign in:', error);

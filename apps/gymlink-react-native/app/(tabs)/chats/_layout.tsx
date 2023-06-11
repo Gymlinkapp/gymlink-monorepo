@@ -7,23 +7,19 @@ import {
   Slot,
   Tabs,
 } from 'expo-router';
-import { useFonts } from 'expo-font';
 
-import { AuthProvider } from '../../context/auth';
+import { AuthProvider } from '../../../context/auth';
 
 export default function AuthRoot() {
   return (
     // Setup the auth context and render our layout inside of it.
-    <Stack
-      screenOptions={{
-        headerStyle: {
-          backgroundColor: '#070707',
-        },
-        headerTitleStyle: {
-          color: '#fff',
-        },
-        // title: 'Gymlink',
-      }}
-    />
+    <Stack>
+      <Stack.Screen
+        name='index'
+        options={{
+          headerShown: false,
+        }}
+      />
+    </Stack>
   );
 }

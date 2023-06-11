@@ -1,205 +1,79 @@
 import {
-  Animated,
-  Modal,
-  Dimensions,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import {
-  SplashScreen,
   Stack,
-  Tabs,
+  usePathname,
   useRootNavigationState,
   useRouter,
   useSegments,
 } from 'expo-router';
-import { AuthProvider, useAuth } from '../context/auth';
 import { useEffect, useState } from 'react';
-import { auth, db } from '../firebase';
-import { collection, doc, getDoc, where } from 'firebase/firestore';
-import { query } from 'firebase/database';
-import { User } from '../types/user';
-import { House, Plus, SignOut, X } from 'phosphor-react-native';
-import { SwipeableUserCard } from '../components/ui/SwipableUserCard';
-import GymPlanModal from '../components/ui/GymPlanModal';
-import Loading from '../components/ui/Loading';
+import { AuthProvider, useAuth } from '../context/auth';
+import { Text, View } from 'react-native';
+import { useCurrentUser } from '../hooks/useCurrentUser';
 
-const { height } = Dimensions.get('window');
+export default function Index() {
+  const { user, loading, isLoggedIn } = useCurrentUser();
 
-export default function Home() {
-  const [index, setIndex] = useState(0);
-  const [swipedUsers, setSwipedUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const translateY = new Animated.Value(height);
-
-  const openModal = () => {
-    setIsModalVisible(true);
-    Animated.timing(translateY, {
-      toValue: 0,
-      duration: 250,
-      useNativeDriver: true,
-    }).start();
-  };
-
-  const closeModal = () => {
-    Animated.timing(translateY, {
-      toValue: height,
-      duration: 250,
-      useNativeDriver: true,
-    }).start(() => {
-      setIsModalVisible(false);
-    });
-  };
-
-  const segments = useSegments();
   const router = useRouter();
+  const segments = useSegments();
   const navigationState = useRootNavigationState();
+  const currentRoute = usePathname();
 
-  const { authUser, user } = useAuth();
-  const [users, setUsers] = useState<User[]>([]);
-
-  useEffect(() => {
-    const fetchUsers = async () => {
-      setLoading(true);
-
-      if (!authUser) {
-        return <SplashScreen />;
-      }
-      try {
-        const userId = authUser.uid;
-        const userRef = doc(db, 'users', userId);
-        const userDoc = await getDoc(userRef);
-
-        const currentUsersGymId = (userDoc.data() as User).gym.place_id;
-        const gymRef = doc(db, 'gyms', currentUsersGymId);
-        const gymSnap = await getDoc(gymRef);
-
-        if (gymSnap.exists()) {
-          const userIds = gymSnap.data().users;
-          const userRefs = userIds.map((id: string) => doc(db, 'users', id));
-          const userSnaps = await Promise.all(userRefs.map(getDoc));
-
-          const users = userSnaps.map((snap) => snap.data());
-          setUsers(
-            users
-              .filter((u) => u !== undefined)
-              .filter((u) => u.uid !== user?.uid)
-          ); // store the users in state
-          setLoading(false);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchUsers();
-  }, []); // dependency array is empty so this effect runs once on mount
-
-  // Handle unauthenticated users
   useEffect(() => {
     if (!navigationState?.key) {
       // Temporary fix for router not being ready.
       return;
     }
+
     const inAuthGroup = segments[0] === '(auth)';
 
-    if (user && user.authStep === 'complete' && inAuthGroup) {
+    if (isLoggedIn && inAuthGroup && currentRoute !== '/(tabs)/home') {
       // Redirect to the home page.
-      router.replace('/');
+      router.replace('/(tabs)/home');
     }
 
-    if (!user && !inAuthGroup) {
+    if (!isLoggedIn && !inAuthGroup && currentRoute !== '/signin') {
       // Redirect to the sign-in page.
       router.replace('/signin');
     }
-  }, [user, segments, navigationState?.key]);
+  }, [user, segments, loading, isLoggedIn]); // Use 'isLoggedIn' as a dependency
 
-  const handleSwipe = (swipedUserId: string) => {
-    // Find the swiped user from the users state
-    const swipedUser = users.find((user) => user.uid === swipedUserId);
-
-    // If the user is found, add them to the swipedUsers state
-    if (swipedUser) {
-      setSwipedUsers((prevSwipedUsers) => [...prevSwipedUsers, swipedUser]);
+  useEffect(() => {
+    if (!navigationState?.key) {
+      // Temporary fix for router not being ready.
+      return;
     }
+    // If the user has completed the auth process, then redirect to the home page
+    if (user) {
+      if (user.authStep === 'complete') {
+        // If the user has completed the auth process, then redirect to the home page
+        router.replace('/');
+      }
+      if (user.authStep !== 'complete') {
+        switch (user.authStep) {
+          case 'name':
+            router.replace('/inputName');
+            break;
+          case 'age':
+            router.replace('/inputAge');
+            break;
+          case 'gender':
+            router.replace('/inputGender');
+            break;
+          case 'picture':
+            router.replace('/inputPicture');
+            break;
+          case 'gym':
+            router.replace('/inputGym');
+            break;
+          default:
+            router.replace('/signin');
+            break;
+        }
+      }
+    }
+  }, [user, user?.authStep, navigationState?.key]);
 
-    // Remove the swiped user from the users state
-    setUsers((prevUsers) =>
-      prevUsers.filter((user) => user.uid !== swipedUserId)
-    );
-  };
+  console.log('userrr', user);
 
-  // router.replace('/inputPicture');
-
-  if (loading) return <Loading />;
-
-  return (
-    <View className='flex-1 bg-dark-500'>
-      <Tabs.Screen
-        options={{
-          headerStyle: {
-            backgroundColor: '#070707',
-            shadowColor: '#070707',
-            borderBottomColor: '#070707',
-          },
-          tabBarStyle: {
-            backgroundColor: '#070707',
-            borderTopColor: '#070707',
-          },
-          tabBarIcon: ({ focused }) => (
-            <House size={24} color='#fff' weight={focused ? 'fill' : 'bold'} />
-          ),
-          headerTitle: '',
-          headerShown: true,
-
-          headerLeft: () => (
-            <Text className='font-akira-expanded text-light-500'>Gymlink</Text>
-          ),
-          headerRight: () => (
-            <TouchableOpacity
-              onPress={() => {
-                auth.signOut();
-                // router.push('/signin');
-              }}
-            >
-              <SignOut size={24} color='#fff' weight='bold' />
-            </TouchableOpacity>
-          ),
-        }}
-      />
-      <View className='w-full h-12 flex-row justify-end px-4 items-center'>
-        <TouchableOpacity
-          onPress={openModal}
-          className='h-10 w-10 rounded-full items-center justify-center bg-light-500'
-        >
-          <Plus size={18} color='#000' weight='bold' />
-        </TouchableOpacity>
-      </View>
-      <GymPlanModal
-        isModalVisible={isModalVisible}
-        setIsModalVisible={setIsModalVisible}
-      />
-      <View style={styles.container}>
-        {users.slice(index, index + 3).map((user, i) => (
-          <SwipeableUserCard
-            key={i}
-            user={user}
-            onSwipe={() => handleSwipe(user.uid)}
-          />
-        ))}
-      </View>
-    </View>
-  );
+  return <View>{!navigationState?.key ? <Text>LOADING...</Text> : <></>}</View>;
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'relative',
-  },
-});
