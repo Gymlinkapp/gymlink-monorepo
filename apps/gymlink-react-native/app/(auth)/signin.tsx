@@ -18,7 +18,7 @@ import { useSignIn } from '../../hooks/useSignIn';
 import { useCurrentUser } from '../../hooks/useCurrentUser';
 import { useAuthNavigation } from '../../hooks/useAuthNavigation';
 
-export default function Signin() {
+export default function SignIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
@@ -62,14 +62,6 @@ export default function Signin() {
       style={{ flex: 1 }}
     >
       <View className='flex-1 bg-dark-500 p-6 justify-between'>
-        <Stack.Screen
-          options={{
-            title: 'Sign In',
-            headerLeft: () => (
-              <HeaderBackButton router={() => router.back()} text='Back' />
-            ),
-          }}
-        />
         <OnboardHeader
           title='Find your gym bro.'
           subtitle='Tap in with your gym community, see what everyone is doing and get big
@@ -109,7 +101,7 @@ export default function Signin() {
               Don't have an account?{' '}
               <TouchableOpacity
                 onPress={() => {
-                  router.push('/signup');
+                  router.replace('/signup');
                 }}
               >
                 <Text className='underline text-white'>Sign up</Text>

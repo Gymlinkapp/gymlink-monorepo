@@ -1,4 +1,4 @@
-import { Tabs } from 'expo-router';
+import { Tabs, useRouter } from 'expo-router';
 import {
   Chat,
   ChatCircleDots,
@@ -11,6 +11,7 @@ import { Text, TouchableOpacity } from 'react-native';
 import { auth } from '../../firebase';
 
 export default function TabsLayout() {
+  const router = useRouter();
   return (
     <Tabs
       screenOptions={{
@@ -42,7 +43,7 @@ export default function TabsLayout() {
             <TouchableOpacity
               onPress={() => {
                 auth.signOut();
-                // router.push('/signin');
+                router.push('/signin');
               }}
             >
               <SignOut size={24} color='#fff' weight='bold' />

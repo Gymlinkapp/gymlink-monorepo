@@ -16,7 +16,7 @@ import { Stack, useRouter } from 'expo-router';
 import { CaretLeft } from 'phosphor-react-native';
 import OnboardHeader from '../../components/ui/OnboardHeader';
 
-export default function Signup() {
+export default function SignIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
@@ -46,22 +46,6 @@ export default function Signup() {
       style={{ flex: 1 }}
     >
       <View className='justify-between p-6 flex-1 bg-dark-500'>
-        <Stack.Screen
-          options={{
-            title: 'Sign Up',
-            headerLeft: () => (
-              <TouchableOpacity
-                className='text-light-500 flex-row items-center'
-                onPress={() => {
-                  router.push('/');
-                }}
-              >
-                <CaretLeft size={24} color='#fff' />
-                <Text className='text-light-500'>Sign In</Text>
-              </TouchableOpacity>
-            ),
-          }}
-        />
         <OnboardHeader
           title='Find your gym bro.'
           subtitle='Tap in with your gym community, see what everyone is doing and get big

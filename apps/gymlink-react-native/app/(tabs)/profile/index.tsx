@@ -55,7 +55,10 @@ export default function Profile() {
             <View className='flex-row items-center'>
               {user.gymPlans &&
                 todayPlan.movements.map((movement) => (
-                  <View className='rounded-full px-4 py-2 bg-light-500 mt-2 mx-1'>
+                  <View
+                    key={movement.label}
+                    className='rounded-full px-4 py-2 bg-light-500 mt-2 mx-1'
+                  >
                     <Text className='text-dark-500 text-xs'>
                       {movement.label}
                     </Text>

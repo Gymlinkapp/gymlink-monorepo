@@ -32,7 +32,6 @@ export default function Home() {
   const navigationState = useRootNavigationState();
 
   const { user, isLoggedIn } = useCurrentUser();
-  console.log('index home user', user?.name);
   const [users, setUsers] = useState<User[]>([]);
 
   const [index, setIndex] = useState(0);
@@ -71,7 +70,6 @@ export default function Home() {
         const userId = user.uid;
         const userRef = doc(db, 'users', userId);
         const userDoc = await getDoc(userRef);
-        console.log('user doc', userDoc.data());
 
         const currentUsersGymId = (userDoc.data() as User).gym.place_id;
         const gymRef = doc(db, 'gyms', currentUsersGymId);
