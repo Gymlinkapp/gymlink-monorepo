@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -14,15 +14,29 @@ import Button from '../../components/ui/Button';
 import OnboardHeader from '../../components/ui/OnboardHeader';
 import { CaretLeft } from 'phosphor-react-native';
 import HeaderBackButton from '../../components/ui/HeaderBackButton';
+import { useSignIn } from '../../hooks/useSignIn';
+import { useCurrentUser } from '../../hooks/useCurrentUser';
+import { useAuthNavigation } from '../../hooks/useAuthNavigation';
 
-export default function Signin() {
+export default function SignIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
 
-  const signIn = async () => {
+  const { user } = useCurrentUser();
+  useAuthNavigation(user);
+
+  useEffect(() => {
+    if (user) {
+      router.push('/(tabs)/home');
+    }
+  }, []);
+
+  const signIn = useSignIn();
+
+  const handleSignIn = async () => {
     try {
-      const user = await signInWithEmailAndPassword(auth, email, password);
+      const user = await signIn(email, password);
 
       if (user) {
         router.push('/(tabs)/home');
@@ -48,14 +62,6 @@ export default function Signin() {
       style={{ flex: 1 }}
     >
       <View className='flex-1 bg-dark-500 p-6 justify-between'>
-        <Stack.Screen
-          options={{
-            title: 'Sign In',
-            headerLeft: () => (
-              <HeaderBackButton router={() => router.back()} text='Back' />
-            ),
-          }}
-        />
         <OnboardHeader
           title='Find your gym bro.'
           subtitle='Tap in with your gym community, see what everyone is doing and get big
@@ -95,7 +101,7 @@ export default function Signin() {
               Don't have an account?{' '}
               <TouchableOpacity
                 onPress={() => {
-                  router.push('/signup');
+                  router.replace('/signup');
                 }}
               >
                 <Text className='underline text-white'>Sign up</Text>
@@ -104,7 +110,7 @@ export default function Signin() {
           </View>
           <TouchableOpacity
             className='bg-light-500 w-full py-6 rounded-md items-center mt-12'
-            onPress={signIn}
+            onPress={handleSignIn}
           >
             <Text className='text-dark-500 font-akira-expanded'>Sign In</Text>
           </TouchableOpacity>

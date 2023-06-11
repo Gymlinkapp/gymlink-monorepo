@@ -18,6 +18,8 @@ import { db } from '../../firebase';
 import { useAuth } from '../../context/auth';
 import { useRouter } from 'expo-router';
 import Loading from './Loading';
+import { useCurrentUser } from '../../hooks/useCurrentUser';
+import { findUsersPlansToday } from '../../utils/findUsersGymPlansForToday';
 
 interface UserCardProps {
   user: User;
@@ -25,7 +27,7 @@ interface UserCardProps {
 
 export const UserCard: React.FC<UserCardProps> = ({ user }) => {
   const [message, setMessage] = React.useState('');
-  const { user: currUser } = useAuth();
+  const { user: currUser } = useCurrentUser();
   const router = useRouter();
 
   const createChat = async () => {
@@ -91,33 +93,10 @@ export const UserCard: React.FC<UserCardProps> = ({ user }) => {
       console.log('Error creating chat:', error);
     }
   };
-  if (!currUser) return <Loading />;
-
-  const findUsersPlansToday = (
-    plans: User['gymPlans']
-  ): {
-    movements: {
-      label: string;
-    }[];
-    isGoingToday: boolean;
-    date: string;
-  } | null => {
-    if (!plans) return null;
-
-    const todayPlan = plans.find((plan) => {
-      const today = new Date();
-      const planDate = new Date(plan.date);
-      return (
-        today.getUTCFullYear() === planDate.getUTCFullYear() &&
-        today.getUTCMonth() === planDate.getUTCMonth() &&
-        today.getUTCDate() === planDate.getUTCDate()
-      );
-    });
-
-    return todayPlan || null;
-  };
-
-  console.log('users plans', findUsersPlansToday(currUser.gymPlans));
+  if (!currUser)
+    return (
+      <View className='w-full h-[70%] overflow-hidden rounded-2xl justify-end bg-dark-400 animate-pulse'></View>
+    );
 
   let todayPlan = findUsersPlansToday(currUser.gymPlans);
 
@@ -187,9 +166,12 @@ export const UserCard: React.FC<UserCardProps> = ({ user }) => {
             {/* if a user has gym plans today [{date: string}] */}
             {todayPlan && (
               <View className='flex-row items-center'>
-                {currUser.gymPlans &&
+                {user.gymPlans &&
                   todayPlan.movements.map((movement) => (
-                    <View className='rounded-full px-4 py-2 bg-light-500 mt-2 mx-1'>
+                    <View
+                      key={movement.label}
+                      className='rounded-full px-4 py-2 bg-light-500 mt-2 mx-1'
+                    >
                       <Text className='text-dark-500 text-xs'>
                         {movement.label}
                       </Text>

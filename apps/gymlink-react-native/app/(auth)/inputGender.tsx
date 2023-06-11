@@ -8,19 +8,20 @@ import { styled } from 'nativewind';
 import OnboardLayout from '../../components/Layouts/OnboardLayout';
 import HeaderBackButton from '../../components/ui/HeaderBackButton';
 import OnboardHeader from '../../components/ui/OnboardHeader';
+import { useCurrentUser } from '../../hooks/useCurrentUser';
 
 export default function InputGender() {
   const [gender, setGender] = useState('');
-  const { authUser } = useAuth();
+  const { user } = useCurrentUser();
   const router = useRouter();
 
   const chooseName = async () => {
-    if (!authUser) {
+    if (!user) {
       return;
     }
     try {
       await setDoc(
-        doc(db, 'users', authUser.uid),
+        doc(db, 'users', user.uid),
         {
           gender: gender,
           authStep: 'picture',

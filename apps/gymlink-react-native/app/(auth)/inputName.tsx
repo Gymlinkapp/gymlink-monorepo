@@ -7,19 +7,20 @@ import { useAuth } from '../../context/auth';
 import OnboardLayout from '../../components/Layouts/OnboardLayout';
 import OnboardHeader from '../../components/ui/OnboardHeader';
 import HeaderBackButton from '../../components/ui/HeaderBackButton';
+import { useCurrentUser } from '../../hooks/useCurrentUser';
 
 export default function InputName() {
   const [name, setName] = useState('');
-  const { authUser } = useAuth();
+  const { user } = useCurrentUser();
   const router = useRouter();
 
   const chooseName = async () => {
-    if (!authUser) {
+    if (!user) {
       return;
     }
     try {
       await setDoc(
-        doc(db, 'users', authUser.uid),
+        doc(db, 'users', user.uid),
         {
           name: name,
           authStep: 'age',

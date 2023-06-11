@@ -5,6 +5,7 @@ export default function Layout() {
   const [fontsLoaded] = useFonts({
     AkiraExpanded: require('../assets/fonts/Akira-Expanded.otf'),
   });
+  console.log('hi');
 
   if (!fontsLoaded) {
     // The native splash screen will stay visible for as long as there

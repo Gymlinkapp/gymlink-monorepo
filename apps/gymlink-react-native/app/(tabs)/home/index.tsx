@@ -17,14 +17,23 @@ import {
   View,
 } from 'react-native';
 import { User } from '../../../types/user';
-import { Plus } from 'phosphor-react-native';
+import { ArrowsCounterClockwise, Plus } from 'phosphor-react-native';
 import GymPlanModal from '../../../components/ui/GymPlanModal';
 import { SwipeableUserCard } from '../../../components/ui/SwipableUserCard';
 import { useCurrentUser } from '../../../hooks/useCurrentUser';
+import Loading from '../../../components/ui/Loading';
+import { findUsersPlansToday } from '../../../utils/findUsersGymPlansForToday';
 
 const { height } = Dimensions.get('window');
 
 export default function Home() {
+  const segments = useSegments();
+  const router = useRouter();
+  const navigationState = useRootNavigationState();
+
+  const { user, isLoggedIn } = useCurrentUser();
+  const [users, setUsers] = useState<User[]>([]);
+
   const [index, setIndex] = useState(0);
   const [swipedUsers, setSwipedUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
@@ -49,13 +58,6 @@ export default function Home() {
       setIsModalVisible(false);
     });
   };
-
-  const segments = useSegments();
-  const router = useRouter();
-  const navigationState = useRootNavigationState();
-
-  const { user, isLoggedIn } = useCurrentUser();
-  const [users, setUsers] = useState<User[]>([]);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -92,7 +94,7 @@ export default function Home() {
     };
 
     fetchUsers();
-  }, []); // dependency array is empty so this effect runs once on mount
+  }, [user]); // dependency array is empty so this effect runs once on mount
 
   const handleSwipe = (swipedUserId: string) => {
     // Find the swiped user from the users state
@@ -109,22 +111,36 @@ export default function Home() {
     );
   };
 
+  const resetFeed = () => {
+    setUsers(swipedUsers);
+    setSwipedUsers([]);
+  };
+
+  if (loading) return <Loading />;
+
+  const todayPlans = findUsersPlansToday(user?.gymPlans);
+
   return (
     <View className='bg-dark-500 h-full'>
       <View className='w-full h-12 flex-row justify-end px-4 items-center'>
-        <TouchableOpacity
-          onPress={openModal}
-          className='h-10 w-10 rounded-full items-center justify-center bg-light-500'
-        >
-          <Plus size={18} color='#000' weight='bold' />
+        <TouchableOpacity onPress={resetFeed}>
+          <ArrowsCounterClockwise size={18} color='#fff' weight='bold' />
         </TouchableOpacity>
+        {!todayPlans && (
+          <TouchableOpacity
+            onPress={openModal}
+            className='h-10 w-10 rounded-full items-center justify-center bg-light-500'
+          >
+            <Plus size={18} color='#000' weight='bold' />
+          </TouchableOpacity>
+        )}
       </View>
       <GymPlanModal
         isModalVisible={isModalVisible}
         setIsModalVisible={setIsModalVisible}
       />
       <View style={styles.container}>
-        {users.slice(index, index + 3).map((user, i) => (
+        {users.map((user, i) => (
           <SwipeableUserCard
             key={i}
             user={user}

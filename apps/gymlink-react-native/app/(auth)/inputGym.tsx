@@ -15,6 +15,7 @@ import axios from 'axios';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import HeaderBackButton from '../../components/ui/HeaderBackButton';
 import OnboardHeader from '../../components/ui/OnboardHeader';
+import { useCurrentUser } from '../../hooks/useCurrentUser';
 
 type Gym = {
   description: string;
@@ -23,7 +24,7 @@ type Gym = {
 
 export default function InputGym() {
   const router = useRouter();
-  const { authUser } = useAuth();
+  const { user } = useCurrentUser();
   const [input, setInput] = useState('');
   const [gyms, setGyms] = useState<Gym[]>([]);
   const [gym, setGym] = useState<Gym | null>(null);
@@ -45,13 +46,13 @@ export default function InputGym() {
   };
 
   const connectGymToUser = async () => {
-    if (!authUser || !gym) {
+    if (!user || !gym) {
       return;
     }
     try {
       // Connect gym to user
       await setDoc(
-        doc(db, 'users', authUser.uid),
+        doc(db, 'users', user.uid),
         {
           gym: gym,
           authStep: 'complete',
@@ -64,12 +65,12 @@ export default function InputGym() {
         doc(db, 'gyms', gym.place_id),
         {
           ...gym,
-          users: arrayUnion(authUser.uid),
+          users: arrayUnion(user.uid),
         },
         { merge: true }
       );
 
-      router.replace('/');
+      router.replace('/(tabs)/home');
     } catch (error) {
       console.log('Error during sign in:', error);
     }

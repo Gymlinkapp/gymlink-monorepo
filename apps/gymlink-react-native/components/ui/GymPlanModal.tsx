@@ -4,6 +4,7 @@ import { FlatList, Modal, Text, TouchableOpacity, View } from 'react-native';
 import { useAuth } from '../../context/auth';
 import { doc, getDoc, onSnapshot, setDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
+import { useCurrentUser } from '../../hooks/useCurrentUser';
 
 type GymPlanModalProps = {
   isModalVisible: boolean;
@@ -22,7 +23,7 @@ export default function GymPlanModal({
 }: GymPlanModalProps) {
   //   const [isGoingToday, setIsGoingToday] = useState(false);
 
-  const { user } = useAuth();
+  const { user } = useCurrentUser();
   const [gymPlans, setGymPlans] = useState(null);
 
   const [items, setItems] = useState<Movement[]>([
