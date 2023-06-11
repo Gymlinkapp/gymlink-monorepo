@@ -13,14 +13,12 @@ import { useAuthNavigation } from '../hooks/useAuthNavigation';
 import Loading from '../components/ui/Loading';
 
 export default function Index() {
-  const navigationState = useRootNavigationState();
-  const router = useRouter();
   const { user, loading, isLoggedIn } = useCurrentUser();
   useAuthNavigation(user);
 
   return (
     <View className='bg-dark-500 h-full'>
-      {!navigationState?.key || loading ? <Loading /> : <></>}
+      {loading ? <Loading /> : <Text className='text-white'>Idek</Text>}
     </View>
   );
 }

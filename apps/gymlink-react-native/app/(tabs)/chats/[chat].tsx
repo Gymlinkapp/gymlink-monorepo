@@ -33,6 +33,8 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { CaretLeft, PaperPlaneRight } from 'phosphor-react-native';
 import { User } from '../../../types/user';
 import { useAuth } from '../../../context/auth';
+import Loading from '../../../components/ui/Loading';
+import { useCurrentUser } from '../../../hooks/useCurrentUser';
 
 interface MessageData extends Partial<Message> {
   roomName: string;
@@ -43,10 +45,10 @@ interface MessageData extends Partial<Message> {
 function ChatItem({ message, user }: { message: Message; user: User }) {
   const [isAuthor, setIsAuthor] = useState(false);
   useEffect(() => {
-    setIsAuthor(message.sender === user.uid);
+    setIsAuthor(message.sender === user?.uid);
   }, []);
   const amIAuthor = (message: Message) =>
-    message.sender === user.uid ? 'flex-row-reverse' : 'flex-row';
+    message.sender === user?.uid ? 'flex-row-reverse' : 'flex-row';
   return (
     <View className={`${amIAuthor(message)} my-2`}>
       <View className='bg-dark-400 p-4 min-w-[125px] max-w-[310px] rounded-3xl'>
@@ -70,7 +72,7 @@ export default function ChatPage() {
     roomName,
     otherUserImage,
   } = useLocalSearchParams();
-  const { user } = useAuth();
+  const { user } = useCurrentUser();
 
   const [chat, setChat] = useState<Chat | null>(null);
   const [socket, setSocket] = useState<any | null>(null);
@@ -173,7 +175,7 @@ export default function ChatPage() {
   };
 
   if (!chat) {
-    return <Text>Loading...</Text>;
+    return <Loading />;
   }
 
   return (

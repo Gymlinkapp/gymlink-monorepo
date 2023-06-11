@@ -50,7 +50,14 @@ const ChatItem = ({ item }: { item: Chat }) => {
     return <Loading />; // Or some custom loading UI
   }
 
-  const otherUser = users.find((u) => u.uid !== user?.uid);
+  const otherUser = users.find(
+    (u) => u.uid !== user?.uid || u.name !== user?.name
+  );
+  console.log(
+    'users',
+    users.map((u) => u.name)
+  );
+  console.log('otherUser', otherUser);
   const lastMessage = item.messages[item.messages.length - 1];
 
   return (

@@ -3,6 +3,7 @@ import {
   useRouter,
   useRootNavigationState,
   SplashScreen,
+  Stack,
 } from 'expo-router';
 import { doc, getDoc } from 'firebase/firestore';
 import { useState, useEffect } from 'react';
@@ -122,6 +123,7 @@ export default function Home() {
 
   return (
     <View className='bg-dark-500 h-full'>
+      <Stack.Screen options={{ headerShown: false }} />
       <View className='w-full h-12 flex-row justify-end px-4 items-center'>
         <TouchableOpacity onPress={resetFeed}>
           <ArrowsCounterClockwise size={18} color='#fff' weight='bold' />

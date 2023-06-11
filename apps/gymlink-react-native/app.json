@@ -2,7 +2,7 @@
   "expo": {
     "name": "Gymlink",
     "slug": "gymlink",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "orientation": "portrait",
     "scheme": "gymlink",
     "icon": "./assets/icon.png",
@@ -19,16 +19,16 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "buildNumber": "54",
+      "buildNumber": "56",
       "bundleIdentifier": "com.devdylan.gymlink-app",
-      "infoPlist": ""
+      "infoPlist": {}
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.devdylan.gymlink-app"
+      "package": "com.devdylan.gymlinkapp"
     },
     "extra": {
       "eas": {
