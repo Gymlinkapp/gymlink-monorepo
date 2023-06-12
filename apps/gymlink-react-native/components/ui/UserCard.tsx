@@ -13,11 +13,9 @@ import { User } from '../../types/user';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MapPin, PaperPlaneRight } from 'phosphor-react-native';
 import { TextInput } from 'react-native-gesture-handler';
-import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { deleteDoc, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
-import { useAuth } from '../../context/auth';
 import { useRouter } from 'expo-router';
-import Loading from './Loading';
 import { useCurrentUser } from '../../hooks/useCurrentUser';
 import { findUsersPlansToday } from '../../utils/findUsersGymPlansForToday';
 
@@ -190,16 +188,18 @@ export const UserCard: React.FC<UserCardProps> = ({ user }) => {
             placeholderTextColor='white'
             className='bg-dark-400 p-4 flex-1 rounded-md text-light-400'
           />
-          <TouchableOpacity onPress={createChat}>
-            <PaperPlaneRight
-              size={24}
-              color='white'
-              weight='fill'
-              style={{
-                paddingHorizontal: 32,
-              }}
-            />
-          </TouchableOpacity>
+          {message.length > 0 && (
+            <TouchableOpacity onPress={createChat}>
+              <PaperPlaneRight
+                size={24}
+                color='white'
+                weight='fill'
+                style={{
+                  paddingHorizontal: 32,
+                }}
+              />
+            </TouchableOpacity>
+          )}
         </View>
       </MotiView>
     </KeyboardAvoidingView>

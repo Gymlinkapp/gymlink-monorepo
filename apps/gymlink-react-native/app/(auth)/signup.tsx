@@ -7,18 +7,20 @@ import {
   View,
   KeyboardAvoidingView,
   Platform,
+  Linking,
 } from 'react-native';
 import { createUserWithEmailAndPassword } from 'firebase/auth/react-native';
 import { collection, doc, setDoc } from 'firebase/firestore';
 
 import { auth, db } from '../../firebase';
 import { Stack, useRouter } from 'expo-router';
-import { CaretLeft } from 'phosphor-react-native';
+import { CaretLeft, Check } from 'phosphor-react-native';
 import OnboardHeader from '../../components/ui/OnboardHeader';
 
 export default function SignIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const router = useRouter();
 
   const signUp = async () => {
@@ -78,6 +80,34 @@ export default function SignIn() {
               secureTextEntry
             />
           </View>
+          <View className='flex-row my-4'>
+            <TouchableOpacity
+              onPress={() => setAcceptedTerms(!acceptedTerms)}
+              className={`${
+                acceptedTerms ? 'bg-white' : 'bg-dark-500'
+              } border-[1px] border-dark-400 rounded-md p-4 w-6 h-6 border-none text-white justify-center items-center mr-2`}
+            >
+              {acceptedTerms && <Check color={'#070707'} size={20} />}
+            </TouchableOpacity>
+            <Text style={{ color: 'white' }} className='flex-1 text-light-400'>
+              Creating an account means you’re okay with our{' '}
+              <Text
+                className='text-light-400'
+                style={{ textDecorationLine: 'underline' }}
+                onPress={() => Linking.openURL('https://gymlink.app/privacy')}
+              >
+                Privacy Policy
+              </Text>
+              ,{' '}
+              <Text
+                className='text-light-400'
+                style={{ textDecorationLine: 'underline' }}
+                onPress={() => Linking.openURL('https://gymlink.app/EULA')}
+              >
+                and EULA.
+              </Text>
+            </Text>
+          </View>
           <View className='items-center justify-center py-2'>
             <Text className='text-light-400'>
               Already have an account?{' '}
@@ -90,12 +120,14 @@ export default function SignIn() {
               </TouchableOpacity>
             </Text>
           </View>
-          <TouchableOpacity
-            className='bg-light-500 w-full py-6 rounded-md items-center mt-12'
-            onPress={signUp}
-          >
-            <Text className='text-dark-500 font-akira-expanded'>Sign Up</Text>
-          </TouchableOpacity>
+          {acceptedTerms && (
+            <TouchableOpacity
+              className='bg-light-500 w-full py-6 rounded-md items-center mt-12'
+              onPress={signUp}
+            >
+              <Text className='text-dark-500 font-akira-expanded'>Sign Up</Text>
+            </TouchableOpacity>
+          )}
         </View>
       </View>
     </KeyboardAvoidingView>

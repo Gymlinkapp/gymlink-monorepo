@@ -1,9 +1,11 @@
-import { Image, Text, View } from 'react-native';
+import { Image, Text, TouchableOpacity, View } from 'react-native';
 import { useCurrentUser } from '../../../hooks/useCurrentUser';
 import { MapPin } from 'phosphor-react-native';
 import Loading from '../../../components/ui/Loading';
 import { LinearGradient } from 'expo-linear-gradient';
 import { findUsersPlansToday } from '../../../utils/findUsersGymPlansForToday';
+import { auth, db } from '../../../firebase';
+import { deleteDoc, doc } from 'firebase/firestore';
 
 export default function Profile() {
   const { user, loading } = useCurrentUser();
@@ -11,6 +13,17 @@ export default function Profile() {
   if (!user || loading) return <Loading />;
 
   let todayPlan = findUsersPlansToday(user.gymPlans);
+
+  const deleteUser = async () => {
+    const authUser = auth.currentUser;
+    try {
+      await deleteDoc(doc(db, 'users', user.uid));
+      await authUser?.delete();
+      auth.signOut();
+    } catch (error) {
+      console.log('Error deleting user:', error);
+    }
+  };
 
   return (
     <View className='bg-dark-500 h-full'>
@@ -67,6 +80,14 @@ export default function Profile() {
             </View>
           )}
         </View>
+      </View>
+
+      <View>
+        <TouchableOpacity className='bg-red-700 rounded-xl'>
+          <Text className='text-white text-center text-lg font-bold py-4'>
+            Delete Account
+          </Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
