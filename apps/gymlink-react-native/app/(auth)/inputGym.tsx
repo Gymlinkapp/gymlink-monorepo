@@ -31,8 +31,7 @@ export default function InputGym() {
 
   const autoCompleteGymLocations = async (input: string) => {
     // const apiKey = process.env.GOOGLE_API_KEY;
-    const apiKey = 'AIzaSyBeVNaKylQx0vKkZ4zW8T_J01s2rUK7KQA';
-    const URL = `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${input}&types=gym&key=${apiKey}`;
+    const URL = `https://api.gymlink.app/api/gyms/autocompleteGymLocations?input=${input}`;
     if (input === '') {
       setGyms([]);
       return;

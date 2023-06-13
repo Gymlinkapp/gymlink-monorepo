@@ -59,11 +59,11 @@ export default function Profile() {
           {/* location */}
           <View className='flex-row items-center'>
             <MapPin size={20} color='white' />
-            <Text className='text-white'>{user.gym.description}</Text>
+            <Text className='text-white'>{user.gym?.description}</Text>
           </View>
 
           {/* their gym plans */}
-          {/* if a user has gym plans today [{date: string}] */}
+          {/* if a user has gym      plans today [{date: string}] */}
           {todayPlan && (
             <View className='flex-row items-center'>
               {user.gymPlans &&
