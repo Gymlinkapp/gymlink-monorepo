@@ -22,7 +22,7 @@ import { SwipeableUserCard } from '../../../components/ui/SwipableUserCard';
 import { useCurrentUser } from '../../../hooks/useCurrentUser';
 import Loading from '../../../components/ui/Loading';
 import { findUsersPlansToday } from '../../../utils/findUsersGymPlansForToday';
-import UserFeedActionsModal from '../../../components/ui/modals/UserFeedActions';
+import UserActionsModal from '../../../components/ui/modals/UserActions';
 
 const { height } = Dimensions.get('window');
 

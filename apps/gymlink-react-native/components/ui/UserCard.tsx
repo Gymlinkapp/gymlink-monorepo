@@ -23,7 +23,7 @@ import { db } from '../../firebase';
 import { useRouter } from 'expo-router';
 import { useCurrentUser } from '../../hooks/useCurrentUser';
 import { findUsersPlansToday } from '../../utils/findUsersGymPlansForToday';
-import UserFeedActionsModal from './modals/UserFeedActions';
+import UserActionsModal from './modals/UserActions';
 
 interface UserCardProps {
   user: User;
@@ -41,7 +41,7 @@ export const UserCard: React.FC<UserCardProps> = ({ user }) => {
     const chatRef = doc(db, 'chats', `${user.uid}-${currUser.uid}`);
 
     try {
-      const chat = await setDoc(chatRef, {
+      await setDoc(chatRef, {
         uid: chatRef.id,
         users: [user.uid, currUser.uid],
         messages: [
@@ -84,7 +84,7 @@ export const UserCard: React.FC<UserCardProps> = ({ user }) => {
 
       // if there is already a chat with this user, don't add it again
       if (otherUserChats.includes(chatRefId)) {
-        router.push('/chats');
+        router.replace('/chats');
         return;
       }
 
@@ -94,7 +94,7 @@ export const UserCard: React.FC<UserCardProps> = ({ user }) => {
         chats: otherUserChats,
       });
 
-      router.push('/chats');
+      router.replace('/chats');
     } catch (error) {
       console.log('Error creating chat:', error);
     }
@@ -112,7 +112,7 @@ export const UserCard: React.FC<UserCardProps> = ({ user }) => {
       keyboardVerticalOffset={Platform.OS === 'ios' ? 125 : 20}
       style={{ flex: 1 }}
     >
-      <UserFeedActionsModal
+      <UserActionsModal
         blockedUserId={user.uid}
         isModalVisible={isUserFeedActionsModalVisible}
         setIsModalVisible={setIsUserFeedActionsModalVisible}

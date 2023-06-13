@@ -6,17 +6,17 @@ import { useCurrentUser } from '../../../hooks/useCurrentUser';
 import { blockUser } from '../../../utils/blockUser';
 import Loading from '../Loading';
 
-type GymPlanModalProps = {
+type ModalProps = {
   isModalVisible: boolean;
   setIsModalVisible: (isModalVisible: boolean) => void;
   blockedUserId: string;
 };
 
-export default function UserFeedActionsModal({
+export default function UserActionsModal({
   isModalVisible,
   setIsModalVisible,
   blockedUserId,
-}: GymPlanModalProps) {
+}: ModalProps) {
   //   const [isGoingToday, setIsGoingToday] = useState(false);
 
   const { user } = useCurrentUser();

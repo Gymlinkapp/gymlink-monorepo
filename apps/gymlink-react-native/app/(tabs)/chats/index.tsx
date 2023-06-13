@@ -6,7 +6,7 @@ import { View } from 'moti';
 import { useEffect, useState } from 'react';
 import { User } from '../../../types/user';
 import { useAuth } from '../../../context/auth';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, onSnapshot } from 'firebase/firestore';
 import { FlatList } from 'react-native-gesture-handler';
 import { Chat } from '../../../types/chat';
 import Loading from '../../../components/ui/Loading';
@@ -58,7 +58,7 @@ const ChatItem = ({ item }: { item: Chat }) => {
     users.map((u) => u.name)
   );
   console.log('otherUser', otherUser);
-  const lastMessage = item.messages[item.messages.length - 1];
+  const lastMessage = item?.messages[item?.messages?.length - 1];
 
   return (
     <TouchableOpacity
@@ -86,7 +86,7 @@ const ChatItem = ({ item }: { item: Chat }) => {
           <Text className='text-white font-akira-expanded text-lg'>
             {otherUser?.name}
           </Text>
-          <Text className='text-light-400'>{lastMessage.content}</Text>
+          <Text className='text-light-400'>{lastMessage?.content}</Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -100,6 +100,29 @@ export default function Chats() {
   const router = useRouter();
 
   const { user } = useCurrentUser();
+
+  useEffect(() => {
+    if (!user) return;
+
+    const userId = user.uid;
+    const userRef = doc(db, 'users', userId);
+
+    // This sets up a real-time listener which updates whenever the data changes
+    const unsubscribe = onSnapshot(
+      userRef,
+      (docSnapshot) => {
+        const userChats = docSnapshot.data()?.chats;
+        setChatIds(userChats); // set chat IDs directly from the snapshot
+        console.log(userChats);
+      },
+      (error) => {
+        console.log('Error fetching chats: ', error);
+      }
+    );
+
+    // Cleanup the subscription when the component unmounts
+    return () => unsubscribe();
+  }, [user]);
 
   useEffect(() => {
     const fetchChats = async () => {
@@ -123,13 +146,9 @@ export default function Chats() {
     fetchChats();
   }, [user]); // dependency array is empty so this effect runs once on mount
 
-  useEffect(() => {
-    if (chatIds?.length > 0) {
-      getAllChats();
-    }
-  }, [chatIds]);
-
   const getAllChats = async () => {
+    if (!chatIds) return;
+
     try {
       const chats = await Promise.all(
         chatIds.map(async (c) => {
@@ -138,14 +157,15 @@ export default function Chats() {
           return chatDoc.data(); // replace with the necessary data structure if needed
         })
       );
-      if (!chats) {
-        return;
-      }
       setChats(chats as Chat[]); // use a state hook to save the chats
     } catch (error) {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    getAllChats();
+  }, [chatIds]);
 
   function handleButtonPress(
     members: Array<{ id: number; displayName: string }>

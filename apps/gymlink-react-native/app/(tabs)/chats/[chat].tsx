@@ -30,11 +30,12 @@ import {
 } from 'react';
 import { Chat, Message } from '../../../types/chat';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { CaretLeft, PaperPlaneRight } from 'phosphor-react-native';
+import { CaretLeft, DotsThree, PaperPlaneRight } from 'phosphor-react-native';
 import { User } from '../../../types/user';
 import { useAuth } from '../../../context/auth';
 import Loading from '../../../components/ui/Loading';
 import { useCurrentUser } from '../../../hooks/useCurrentUser';
+import ChatActionsModal from '../../../components/ui/modals/ChatActions';
 
 interface MessageData extends Partial<Message> {
   roomName: string;
@@ -74,6 +75,8 @@ export default function ChatPage() {
   } = useLocalSearchParams();
   const { user } = useCurrentUser();
 
+  const [isChatActionsModalVisible, setIsChatActionsModalVisible] =
+    useState(false);
   const [chat, setChat] = useState<Chat | null>(null);
   const [socket, setSocket] = useState<any | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -188,14 +191,28 @@ export default function ChatPage() {
           headerShown: false,
         }}
       />
+      <ChatActionsModal
+        isModalVisible={isChatActionsModalVisible}
+        setIsModalVisible={setIsChatActionsModalVisible}
+        chatId={chatId as string}
+      />
       <View className='py-16 px-4'>
-        <TouchableOpacity
-          className='flex-row items-center bg-secondaryDark justify-center rounded-full w-32 py-2'
-          onPress={() => router.push('/chats')}
-        >
-          <CaretLeft color='#fff' weight='regular' />
-          <Text className='text-white'>Back</Text>
-        </TouchableOpacity>
+        <View className='flex-row justify-between w-full items-center'>
+          <TouchableOpacity
+            className='flex-row items-center bg-secondaryDark justify-center rounded-full w-32 py-2'
+            onPress={() => router.push('/chats')}
+          >
+            <CaretLeft color='#fff' weight='regular' />
+            <Text className='text-white'>Back</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() =>
+              setIsChatActionsModalVisible(!isChatActionsModalVisible)
+            }
+          >
+            <DotsThree color='#fff' weight='regular' size={24} />
+          </TouchableOpacity>
+        </View>
         <TouchableOpacity
           onPress={() => router.push('/chats')}
           className='flex-row items-center mt-4'
