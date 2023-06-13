@@ -126,9 +126,9 @@ export default function Home() {
   return (
     <View className='bg-dark-500 h-full'>
       <Stack.Screen options={{ headerShown: false }} />
-      <View className='w-full h-12 flex-row justify-end px-4 items-center'>
+      <View className='w-full h-12 flex-row justify-between px-4 items-center'>
         <TouchableOpacity onPress={resetFeed}>
-          <ArrowsCounterClockwise size={18} color='#fff' weight='bold' />
+          <ArrowsCounterClockwise size={24} color='#d3d3d3' weight='bold' />
         </TouchableOpacity>
         {!todayPlans && (
           <TouchableOpacity
