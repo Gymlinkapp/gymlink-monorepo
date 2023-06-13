@@ -7,13 +7,11 @@ import {
 } from 'expo-router';
 import { doc, getDoc } from 'firebase/firestore';
 import { useState, useEffect } from 'react';
-import { useAuth } from '../../../context/auth';
 import { db } from '../../../firebase';
 import {
   Animated,
   Dimensions,
   StyleSheet,
-  Text,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -24,6 +22,7 @@ import { SwipeableUserCard } from '../../../components/ui/SwipableUserCard';
 import { useCurrentUser } from '../../../hooks/useCurrentUser';
 import Loading from '../../../components/ui/Loading';
 import { findUsersPlansToday } from '../../../utils/findUsersGymPlansForToday';
+import UserFeedActionsModal from '../../../components/ui/modals/UserFeedActions';
 
 const { height } = Dimensions.get('window');
 
@@ -38,11 +37,12 @@ export default function Home() {
   const [index, setIndex] = useState(0);
   const [swipedUsers, setSwipedUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isGymPlanModalVisible, setIsGymPlanModalVisible] = useState(false);
+
   const translateY = new Animated.Value(height);
 
   const openModal = () => {
-    setIsModalVisible(true);
+    setIsGymPlanModalVisible(true);
     Animated.timing(translateY, {
       toValue: 0,
       duration: 250,
@@ -56,7 +56,7 @@ export default function Home() {
       duration: 250,
       useNativeDriver: true,
     }).start(() => {
-      setIsModalVisible(false);
+      setIsGymPlanModalVisible(false);
     });
   };
 
@@ -86,6 +86,8 @@ export default function Home() {
             users
               .filter((u) => u !== undefined)
               .filter((u) => u.uid !== user?.uid)
+              // make sure that the users that the current user blocked are not shown in the feed.
+              .filter((u) => !user?.blockedUsers?.includes(u?.uid))
           ); // store the users in state
           setLoading(false);
         }
@@ -137,9 +139,10 @@ export default function Home() {
           </TouchableOpacity>
         )}
       </View>
+
       <GymPlanModal
-        isModalVisible={isModalVisible}
-        setIsModalVisible={setIsModalVisible}
+        isModalVisible={isGymPlanModalVisible}
+        setIsModalVisible={setIsGymPlanModalVisible}
       />
       <View style={styles.container}>
         {users.map((user, i) => (

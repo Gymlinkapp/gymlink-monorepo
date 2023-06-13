@@ -16,4 +16,5 @@ export type User = {
     isGoingToday: boolean;
     date: string;
   }[];
+  blockedUsers: string[];
 };
