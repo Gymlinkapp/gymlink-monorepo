@@ -1,5 +1,10 @@
-import { SplashScreen, Tabs, useRouter } from 'expo-router';
-import { ChatCircle, House, SignOut } from 'phosphor-react-native';
+import { SplashScreen, Stack, Tabs, useRouter } from 'expo-router';
+import {
+  ChatCircle,
+  ChatCircleText,
+  House,
+  SignOut,
+} from 'phosphor-react-native';
 import { Image, Text, TouchableOpacity } from 'react-native';
 import { auth, db } from '../../../firebase';
 import { View } from 'moti';
@@ -11,6 +16,7 @@ import { FlatList } from 'react-native-gesture-handler';
 import { Chat } from '../../../types/chat';
 import Loading from '../../../components/ui/Loading';
 import { useCurrentUser } from '../../../hooks/useCurrentUser';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const ChatItem = ({ item }: { item: Chat }) => {
   const { user } = useCurrentUser();
@@ -166,6 +172,21 @@ export default function Chats() {
   useEffect(() => {
     getAllChats();
   }, [chatIds]);
+
+  if (!chatIds.length || chats.length === 0) {
+    return (
+      <View className='flex-1 bg-dark-500 justify-center items-center relative'>
+        <LinearGradient
+          colors={['#4c669f', '#3b5998', '#192f6a']}
+          className='absolute top-0 left-0 w-full h-full'
+        />
+        <Text className='text-white text-xl font-akira-expanded'>
+          No chats yet
+        </Text>
+        <ChatCircleText size={48} weight='fill' color='white' />
+      </View>
+    );
+  }
 
   function handleButtonPress(
     members: Array<{ id: number; displayName: string }>
