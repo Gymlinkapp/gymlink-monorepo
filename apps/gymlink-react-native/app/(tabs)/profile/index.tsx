@@ -6,6 +6,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { findUsersPlansToday } from '../../../utils/findUsersGymPlansForToday';
 import { auth, db } from '../../../firebase';
 import { deleteDoc, doc } from 'firebase/firestore';
+import { Stack } from 'expo-router';
 
 export default function Profile() {
   const { user, loading } = useCurrentUser();
@@ -27,6 +28,9 @@ export default function Profile() {
 
   return (
     <View className='bg-dark-500 h-full'>
+      <Stack.Screen
+        options={{ headerShown: false, title: user ? user.name : 'Profile' }}
+      />
       <View className='w-full h-[70%] overflow-hidden rounded-2xl justify-end'>
         <Image
           source={{ uri: user.image }}

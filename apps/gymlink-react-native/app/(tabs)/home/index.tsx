@@ -125,7 +125,7 @@ export default function Home() {
 
   return (
     <View className='bg-dark-500 h-full'>
-      <Stack.Screen options={{ headerShown: false }} />
+      <Stack.Screen options={{ headerShown: false, title: 'Home | Gymlink' }} />
       <View className='w-full h-12 flex-row justify-between px-4 items-center'>
         <TouchableOpacity onPress={resetFeed}>
           <ArrowsCounterClockwise size={24} color='#d3d3d3' weight='bold' />

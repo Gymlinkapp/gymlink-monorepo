@@ -78,7 +78,7 @@ export default function InputGym() {
     <SafeAreaView className='flex-1 justify-between bg-dark-500 px-6'>
       <Stack.Screen
         options={{
-          title: 'Your gender',
+          title: 'Connect to your gym',
           headerLeft: () => (
             <HeaderBackButton router={() => router.back} text='Back' />
           ),
