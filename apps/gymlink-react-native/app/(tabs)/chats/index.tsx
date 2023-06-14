@@ -173,17 +173,23 @@ export default function Chats() {
     getAllChats();
   }, [chatIds]);
 
-  if (!chatIds.length || chats.length === 0) {
+  if (!chatIds || chats.length === 0) {
     return (
-      <View className='flex-1 bg-dark-500 justify-center items-center relative'>
+      <View className='flex-1 bg-dark-500 items-center relative'>
+        <Stack.Screen options={{ title: 'Chats | Gymlink' }} />
         <LinearGradient
           colors={['#4c669f', '#3b5998', '#192f6a']}
-          className='absolute top-0 left-0 w-full h-full'
+          className='absolute top-0 left-0 w-full h-full z-10'
         />
-        <Text className='text-white text-xl font-akira-expanded'>
+        <Text className='text-white text-xl font-akira-expanded z-20 pt-12'>
           No chats yet
         </Text>
-        <ChatCircleText size={48} weight='fill' color='white' />
+        <ChatCircleText
+          size={48}
+          weight='fill'
+          color='white'
+          style={{ zIndex: 20 }}
+        />
       </View>
     );
   }
@@ -194,6 +200,7 @@ export default function Chats() {
 
   return (
     <View className='flex-1 bg-dark-500'>
+      <Stack.Screen options={{ title: 'Chats | Gymlink' }} />
       <View>
         <FlatList
           data={chats}
