@@ -1,4 +1,4 @@
-import { Check, Prohibit, X } from 'phosphor-react-native';
+import { Check, Flag, Prohibit, X } from 'phosphor-react-native';
 import { useEffect, useState } from 'react';
 import { FlatList, Modal, Text, TouchableOpacity, View } from 'react-native';
 import { doc, getDoc, onSnapshot, setDoc } from 'firebase/firestore';
@@ -60,7 +60,7 @@ export default function UserActionsModal({
               <X color='#fff' />
             </TouchableOpacity>
           </View>
-          <View>
+          <View className='bg-dark-400 rounded-md px-4 my-2'>
             <TouchableOpacity
               onPress={() => {
                 blockUser(user, blockedUserId);
@@ -68,8 +68,21 @@ export default function UserActionsModal({
               className='rounded-md py-6 flex-row items-center'
             >
               <Prohibit size={24} color='#fff' />
-              <Text className='text-light-500 text-xl font-bold pl-4'>
+              <Text className='text-light-500 text-sm font-bold pl-4'>
                 Block
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <View className='bg-red-700 rounded-md px-4 my-2'>
+            <TouchableOpacity
+              onPress={() => {
+                blockUser(user, blockedUserId);
+              }}
+              className='rounded-md py-6 flex-row items-center'
+            >
+              <Flag size={24} color='#fff' />
+              <Text className='text-light-500 text-sm font-bold pl-4'>
+                Report inappropriate user profile
               </Text>
             </TouchableOpacity>
           </View>
