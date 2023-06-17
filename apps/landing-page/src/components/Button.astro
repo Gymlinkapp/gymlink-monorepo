@@ -12,7 +12,7 @@ const { url, text, variant, internalLink } = Astro.props;
 <a
   class={`text-dark-500 flex gap-5 px-8 py-2 rounded-lg max-w-fit text-md font-medium z-30 border-[1px] ${
     variant === "primary"
-      ? "bg-light-500 hover:bg-light-600 hover:text-white hover:bg-transparent hover:border-light-500 ease-in-out transition-all duration-300"
+      ? "bg-light-500 font-bold hover:bg-light-600 hover:text-white hover:bg-transparent hover:border-light-500 ease-in-out transition-all duration-300"
       : "bg-transparent border-[1px] border-light-500 text-light-500 hover:bg-light-500 hover:text-dark-500 ease-in-out transition-all duration-300"
   }`}
   href={url}
