@@ -14,6 +14,9 @@ import Button from "../components/Button.astro";
   <main class="bg-dark-500 min-h-screen relative bg-cover bg-center pt-48 text-white mx-auto text-center font-manrope">
     <section class="relative min-h-[50vh] md:min-h-[45vh] max-w-4xl mx-auto z-10 px-12">
       <!-- <span class="text-xs relative z-20 md:text-base bg-dark-400 border-[0.5px] border-dark-300 px-4 py-2 rounded-full">Let us know if you're interested in the form below</span> -->
+      <div class='z-20 relative w-full flex justify-center md:py-6'>
+        <a href="https://www.producthunt.com/posts/gymlink?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-gymlink" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=400166&theme=light" alt="Gymlink - A&#0032;platform&#0032;to&#0032;find&#0032;friends&#0032;based&#0032;on&#0032;your&#0032;gym&#0032;community&#0046; | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" class='z-20' /></a>
+      </div>
     <h1 class="text-5xl relative z-20 font-bold mt-4 mb-2 font-akira-expanded">
       Find your gym bro.
     </h1>
@@ -24,13 +27,14 @@ import Button from "../components/Button.astro";
       <Button url="https://apps.apple.com/us/app/gymlink/id1662233120" variant="primary" text="Download" />
       <Button url="https://app.gymlink.app/" variant="secondary" text="Sign Up" internalLink />
     </div>
+    
     <div class="absolute inset-0 w-full h-full rounded-3xl overflow-hidden">
       <div class="bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-dark-500 to-transparent absolute"></div>
       <img src="/hero-bg1.webp" alt="gymlink background image" class="object-cover w-full h-full">
     </div>
     </section>
 
-    <section class="grid grid-cols-1 md:grid-cols-3 max-w-4xl mx-auto px-6 -mt-24 z-20 gap-4 relative">
+    <section class="grid grid-cols-1 md:grid-cols-3 max-w-4xl mx-auto px-6 -mt-16 md:-mt-48 z-20 gap-4 relative">
       <video src="/irl-sf-4.mov" playsinline autoplay controls={false} loop muted class="row-start-1 col-start-1 col-span-3 md:col-span-1 md:row-end-3 md:h-full w-full object-cover rounded-2xl"></video>
       <video src="/irl-sf-9-comp.mov" playsinline autoplay controls={false} loop muted class="row-start-3 col-start-2 col-span-2 md:col-span-1 md:row-start-2 h-full object-cover rounded-2xl"></video>
       
