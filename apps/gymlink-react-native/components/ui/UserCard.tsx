@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   Image,
   Text,
@@ -8,32 +8,32 @@ import {
   Platform,
   TouchableOpacity,
 } from 'react-native';
-import { MotiView } from 'moti';
-import { User } from '../../types/user';
-import { LinearGradient } from 'expo-linear-gradient';
+import {MotiView} from 'moti';
+import {User} from '../../types/user';
+import {LinearGradient} from 'expo-linear-gradient';
 import {
   DotsThree,
   MapPin,
   PaperPlaneRight,
   Prohibit,
 } from 'phosphor-react-native';
-import { TextInput } from 'react-native-gesture-handler';
-import { deleteDoc, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
-import { db } from '../../firebase';
-import { useRouter } from 'expo-router';
-import { useCurrentUser } from '../../hooks/useCurrentUser';
-import { findUsersPlansToday } from '../../utils/findUsersGymPlansForToday';
+import {TextInput} from 'react-native-gesture-handler';
+import {deleteDoc, doc, getDoc, setDoc, updateDoc} from 'firebase/firestore';
+import {db} from '../../firebase';
+import {useRouter} from 'expo-router';
+import {useCurrentUser} from '../../hooks/useCurrentUser';
+import {findUsersPlansToday} from '../../utils/findUsersGymPlansForToday';
 import UserActionsModal from './modals/UserActions';
 
 interface UserCardProps {
   user: User;
 }
 
-export const UserCard: React.FC<UserCardProps> = ({ user }) => {
+export const UserCard: React.FC<UserCardProps> = ({user}) => {
   const [message, setMessage] = useState('');
   const [isUserFeedActionsModalVisible, setIsUserFeedActionsModalVisible] =
     useState(false);
-  const { user: currUser } = useCurrentUser();
+  const {user: currUser} = useCurrentUser();
   const router = useRouter();
 
   const createChat = async () => {
@@ -110,7 +110,7 @@ export const UserCard: React.FC<UserCardProps> = ({ user }) => {
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 125 : 20}
-      style={{ flex: 1 }}
+      style={{flex: 1}}
     >
       <UserActionsModal
         blockedUserId={user.uid}
@@ -130,8 +130,8 @@ export const UserCard: React.FC<UserCardProps> = ({ user }) => {
           width: Dimensions.get('window').width,
           height: Dimensions.get('window').height,
         }}
-        from={{ opacity: 0, translateX: 300 }}
-        animate={{ opacity: 1, translateX: 0 }}
+        from={{opacity: 0, translateX: 300}}
+        animate={{opacity: 1, translateX: 0}}
         transition={{
           type: 'timing',
           duration: 300,
@@ -150,7 +150,7 @@ export const UserCard: React.FC<UserCardProps> = ({ user }) => {
             </TouchableOpacity>
           </View>
           <Image
-            source={{ uri: user.image }}
+            source={{uri: user.image}}
             className='w-full h-full absolute top-0 left-0'
           />
           <LinearGradient
@@ -180,7 +180,7 @@ export const UserCard: React.FC<UserCardProps> = ({ user }) => {
             {/* location */}
             <View className='flex-row items-center'>
               <MapPin size={20} color='white' />
-              <Text className='text-white'>{user.gym.description}</Text>
+              <Text className='text-white'>{user.gym?.description}</Text>
             </View>
 
             {/* their gym plans */}

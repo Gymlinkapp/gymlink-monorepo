@@ -1,36 +1,39 @@
-import {arrayUnion, doc, setDoc} from 'firebase/firestore';
-import {useEffect, useState} from 'react';
+import {useRouter} from 'expo-router';
 import {
-  Button,
   FlatList,
+  SafeAreaView,
   ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
-import {db} from '../../firebase';
-import {Stack, useRouter} from 'expo-router';
-import {useAuth} from '../../context/auth';
+import {useCurrentUser} from '../../../hooks/useCurrentUser';
+import {arrayRemove, arrayUnion, doc, getDoc, setDoc} from 'firebase/firestore';
+import {db} from '../../../firebase';
+import {Gym, User} from '../../../types/user';
 import axios from 'axios';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import HeaderBackButton from '../../components/ui/HeaderBackButton';
-import OnboardHeader from '../../components/ui/OnboardHeader';
-import {useCurrentUser} from '../../hooks/useCurrentUser';
+import {useEffect, useState} from 'react';
 import {X} from 'phosphor-react-native';
 
-type Gym = {
-  description: string;
-  place_id: string;
-};
-
-export default function InputGym() {
-  const router = useRouter();
-  const {user} = useCurrentUser();
+export default function Settings() {
+  const {user, loading} = useCurrentUser();
   const [input, setInput] = useState('');
   const [selectedGyms, setSelectedGyms] = useState<Gym[]>([]);
   const [gyms, setGyms] = useState<Gym[]>([]);
-  const [gym, setGym] = useState<Gym | null>(null);
+
+  const router = useRouter();
+
+  useEffect(() => {
+    // If the user is loaded and has gyms, set them as the selected gyms
+    if (user && user.gyms) {
+      setSelectedGyms(user.gyms);
+    }
+    // If the user has a single gym, set it as the selected gym
+    else if (user && user.gym) {
+      setSelectedGyms([user.gym]);
+    }
+  }, [user]);
 
   const autoCompleteGymLocations = async (input: string) => {
     // const apiKey = process.env.GOOGLE_API_KEY;
@@ -51,34 +54,48 @@ export default function InputGym() {
     if (!user || selectedGyms.length === 0) {
       return;
     }
+
     try {
+      const userRef = doc(db, 'users', user.uid);
+      const userDoc = await getDoc(userRef);
+      const userData = userDoc.data() as User;
+
+      const previousUserGyms = userData.gyms || [userData.gym];
+
+      // Remove user from gyms they have unselected
+      const gymsToRemove = previousUserGyms.filter(
+        (gym) => !selectedGyms.includes(gym as Gym)
+      );
+      await Promise.all(
+        gymsToRemove.map(async (gym) => {
+          await setDoc(
+            doc(db, 'gyms', gym?.place_id || ''),
+            {
+              users: arrayRemove(user.uid),
+            },
+            {merge: true}
+          );
+        })
+      );
+
       // Connect gym to user
       await setDoc(
-        doc(db, 'users', user.uid),
+        userRef,
         {
           gyms: selectedGyms,
-          authStep: 'complete',
         },
         {merge: true}
       );
 
-      // Save gym to Firestore
-      // await setDoc(
-      //   doc(db, 'gyms', gym.place_id),
-      //   {
-      //     ...gym,
-      //     users: arrayUnion(user.uid),
-      //   },
-      //   {merge: true}
-      // );
-      console.log('hello');
-      // multiple gyms
+      // Add user to new gyms they have selected
+      const gymsToAdd = selectedGyms.filter(
+        (gym) => !previousUserGyms.includes(gym)
+      );
       await Promise.all(
-        selectedGyms.map(async (gym) => {
+        gymsToAdd.map(async (gym) => {
           await setDoc(
             doc(db, 'gyms', gym.place_id),
             {
-              ...gym,
               users: arrayUnion(user.uid),
             },
             {merge: true}
@@ -86,34 +103,23 @@ export default function InputGym() {
         })
       );
 
-      router.replace('/(tabs)/home');
+      router.push('/profile');
     } catch (error) {
-      console.log('Error during sign in:', error);
+      console.log('Error during gym update:', error);
     }
   };
+
   return (
-    <SafeAreaView className='flex-1 justify-between bg-dark-500 px-6'>
-      <Stack.Screen
-        options={{
-          title: 'Connect to your gym',
-          headerLeft: () => (
-            <HeaderBackButton router={() => router.back} text='Back' />
-          ),
-        }}
-      />
+    <SafeAreaView className='flex-1 bg-dark-500 px-6'>
       <View>
-        <OnboardHeader
-          title='Tap into your gym.'
-          subtitle='Tap in with your gym community, see what everyone is doing and get big together.'
-        />
         <TextInput
           className='bg-dark-400 px-2 py-4 rounded-md text-white'
-          placeholder='Power House, Dallas, Texas'
+          placeholder='Search for gyms'
           onChangeText={(value) => {
             setInput(value);
             autoCompleteGymLocations(value);
           }}
-          value={gym ? gym.description : input}
+          value={input}
         />
         {gyms.length > 0 && (
           <View className='bg-secondaryDark rounded-b-md border-2 border-tertiaryDark'>
@@ -140,7 +146,10 @@ export default function InputGym() {
       <ScrollView>
         {selectedGyms.length > 0 &&
           selectedGyms.map((gym) => (
-            <View className='px-2 py-6 bg-dark-400 flex-row w-full justify-between items-center my-2 rounded-md'>
+            <View
+              className='px-2 py-6 bg-dark-400 flex-row w-full justify-between items-center my-2 rounded-md'
+              key={gym.place_id}
+            >
               <Text className='text-light-400 text-sm font-bold w-72'>
                 {gym.description}
               </Text>
@@ -160,7 +169,7 @@ export default function InputGym() {
           onPress={connectGymToUser}
         >
           <Text className='text-dark-500 font-akira-expanded'>
-            Find your gym bro
+            Add selected gyms
           </Text>
         </TouchableOpacity>
       )}

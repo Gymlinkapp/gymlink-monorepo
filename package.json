@@ -5,7 +5,7 @@
     "packages/*"
   ],
   "scripts": {
-    "start:app": "cd apps/expo-app && expo start",
+    "start:app": "cd apps/gymlink-react-native && expo start --dev-client",
     "start:api": "cd apps/api && npm run dev",
     "start:chat-service": "cd apps/chat-service && npm run dev",
     "start:landing-page": "cd apps/landing-page && npm run dev",

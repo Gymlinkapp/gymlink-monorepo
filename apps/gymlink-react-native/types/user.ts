@@ -1,3 +1,8 @@
+export type Gym = {
+  place_id: string;
+  description: string;
+};
+
 export type User = {
   id: string;
   email: string;
@@ -7,10 +12,8 @@ export type User = {
   uid: string;
   age: number;
   chats: [];
-  gym: {
-    place_id: string;
-    description: string;
-  };
+  gym?: Gym; // make gym optional
+  gyms?: Gym[]; // array of gyms
   gymPlans?: {
     movements: [];
     isGoingToday: boolean;

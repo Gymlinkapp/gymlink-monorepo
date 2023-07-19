@@ -1,15 +1,16 @@
-import { Image, Text, TouchableOpacity, View } from 'react-native';
-import { useCurrentUser } from '../../../hooks/useCurrentUser';
-import { MapPin } from 'phosphor-react-native';
+import {Image, Text, TouchableOpacity, View} from 'react-native';
+import {useCurrentUser} from '../../../hooks/useCurrentUser';
+import {MapPin} from 'phosphor-react-native';
 import Loading from '../../../components/ui/Loading';
-import { LinearGradient } from 'expo-linear-gradient';
-import { findUsersPlansToday } from '../../../utils/findUsersGymPlansForToday';
-import { auth, db } from '../../../firebase';
-import { deleteDoc, doc } from 'firebase/firestore';
-import { Stack } from 'expo-router';
+import {LinearGradient} from 'expo-linear-gradient';
+import {findUsersPlansToday} from '../../../utils/findUsersGymPlansForToday';
+import {auth, db} from '../../../firebase';
+import {deleteDoc, doc} from 'firebase/firestore';
+import {Stack, useRouter} from 'expo-router';
 
 export default function Profile() {
-  const { user, loading } = useCurrentUser();
+  const router = useRouter();
+  const {user, loading} = useCurrentUser();
 
   if (!user || loading) return <Loading />;
 
@@ -29,11 +30,11 @@ export default function Profile() {
   return (
     <View className='bg-dark-500 h-full'>
       <Stack.Screen
-        options={{ headerShown: false, title: user ? user.name : 'Profile' }}
+        options={{headerShown: false, title: user ? user.name : 'Profile'}}
       />
       <View className='w-full h-[70%] overflow-hidden rounded-2xl justify-end'>
         <Image
-          source={{ uri: user.image }}
+          source={{uri: user.image}}
           className='w-full h-full absolute top-0 left-0'
         />
         <LinearGradient
@@ -87,6 +88,16 @@ export default function Profile() {
       </View>
 
       <View>
+        <TouchableOpacity
+          onPress={() => {
+            router.push('/profile/settings');
+          }}
+          className='rounded-xl'
+        >
+          <Text className='text-white text-center text-lg font-bold py-4'>
+            Edit Account
+          </Text>
+        </TouchableOpacity>
         <TouchableOpacity className='bg-red-700 rounded-xl'>
           <Text className='text-white text-center text-lg font-bold py-4'>
             Delete Account
